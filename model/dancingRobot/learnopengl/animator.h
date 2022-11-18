@@ -13,7 +13,7 @@ class Animator
 public:
 	Animator(Animation* animation)
 	{
-		m_CurrentTime = 0.0;
+		m_CurrentTime = 0.0;//start of the animation
 		m_CurrentAnimation = animation;
 
 		m_FinalBoneMatrices.reserve(100);

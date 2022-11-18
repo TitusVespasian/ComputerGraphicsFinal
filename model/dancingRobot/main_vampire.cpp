@@ -88,7 +88,7 @@ int main()
 	// -----------
 	Model ourModel("resources/objects/girl/Hip Hop Dancing.dae");
 	Animation danceAnimation("resources/objects/girl/Hip Hop Dancing.dae", &ourModel);
-	Animator animator(&danceAnimation);
+	Animator animator(&danceAnimation);//start of the animator
 
 
 	// draw in wireframe

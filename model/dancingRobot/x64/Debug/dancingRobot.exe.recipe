@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>D:\TestCodes\OpenGL\workSpace\ComputerGraphicsFinal\model\x64\Debug\dancingRobot.exe</FullPath>
+      <FullPath>C:\computerGraphics\dancingRobot\model\x64\Debug\dancingRobot.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
