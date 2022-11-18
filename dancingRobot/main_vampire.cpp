@@ -86,8 +86,8 @@ int main()
 
 	// load models
 	// -----------
-	Model ourModel("resources/objects/vampire/dancing_vampire.dae");
-	Animation danceAnimation("resources/objects/vampire/dancing_vampire.dae", &ourModel);
+	Model ourModel("resources/objects/girl/Hip Hop Dancing.dae");
+	Animation danceAnimation("resources/objects/girl/Hip Hop Dancing.dae", &ourModel);
 	Animator animator(&danceAnimation);
 
 

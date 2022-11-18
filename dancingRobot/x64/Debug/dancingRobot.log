@@ -16,6 +16,6 @@ C:\computerGraphics\dancingRobot\dancingRobot\main_vampire.cpp(191,10): warning 
 C:\computerGraphics\dancingRobot\dancingRobot\main_vampire.cpp(192,10): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
 C:\computerGraphics\dancingRobot\dancingRobot\main_vampire.cpp(201,28): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
 C:\computerGraphics\dancingRobot\dancingRobot\learnopengl\bone.h(96): warning C4715: “Bone::GetPositionIndex”: 不是所有的控件路径都返回值
-C:\computerGraphics\dancingRobot\dancingRobot\learnopengl\bone.h(106): warning C4715: “Bone::GetRotationIndex”: 不是所有的控件路径都返回值
 C:\computerGraphics\dancingRobot\dancingRobot\learnopengl\bone.h(116): warning C4715: “Bone::GetScaleIndex”: 不是所有的控件路径都返回值
+C:\computerGraphics\dancingRobot\dancingRobot\learnopengl\bone.h(106): warning C4715: “Bone::GetRotationIndex”: 不是所有的控件路径都返回值
   dancingRobot.vcxproj -> C:\computerGraphics\dancingRobot\x64\Debug\dancingRobot.exe
