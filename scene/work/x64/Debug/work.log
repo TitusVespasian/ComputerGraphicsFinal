@@ -1,0 +1,31 @@
+﻿  modelWithBox.cpp
+D:\TestCodes\OpenGL\workSpace\localSpace\scene\work\mesh.h(105,1): warning C4267: “参数”: 从“size_t”转换到“GLsizei”，可能丢失数据
+D:\TestCodes\OpenGL\workSpace\localSpace\scene\work\model.h(101,30): warning C4244: “=”: 从“double”转换到“T”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+D:\TestCodes\OpenGL\workSpace\localSpace\scene\work\model.h(102,30): warning C4244: “=”: 从“double”转换到“T”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+D:\TestCodes\OpenGL\workSpace\localSpace\scene\work\model.h(103,30): warning C4244: “=”: 从“double”转换到“T”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+D:\TestCodes\OpenGL\workSpace\localSpace\scene\work\model.h(121,29): warning C4244: “=”: 从“double”转换到“T”，可能丢失数据
+          with
+          [
+              T=float
+          ]
+D:\TestCodes\OpenGL\workSpace\localSpace\scene\work\modelWithBox.cpp(168,22): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\TestCodes\OpenGL\workSpace\localSpace\scene\work\modelWithBox.cpp(283,11): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+D:\TestCodes\OpenGL\workSpace\localSpace\scene\work\modelWithBox.cpp(284,11): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+D:\TestCodes\OpenGL\workSpace\localSpace\scene\work\modelWithBox.cpp(288,16): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\TestCodes\OpenGL\workSpace\localSpace\scene\work\modelWithBox.cpp(289,16): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+D:\TestCodes\OpenGL\workSpace\localSpace\scene\work\modelWithBox.cpp(291,10): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+D:\TestCodes\OpenGL\workSpace\localSpace\scene\work\modelWithBox.cpp(292,10): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+D:\TestCodes\OpenGL\workSpace\localSpace\scene\work\modelWithBox.cpp(301,28): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+  work.vcxproj -> D:\TestCodes\OpenGL\workSpace\localSpace\scene\x64\Debug\work.exe

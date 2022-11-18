@@ -1,0 +1,25 @@
+﻿  glad.c
+  test.cpp
+test.obj : error LNK2001: 无法解析的外部符号 _glfwSwapBuffers
+test.obj : error LNK2001: 无法解析的外部符号 _glfwSetFramebufferSizeCallback
+test.obj : error LNK2001: 无法解析的外部符号 _aiGetMaterialTextureCount
+test.obj : error LNK2001: 无法解析的外部符号 _glfwGetTime
+test.obj : error LNK2001: 无法解析的外部符号 _glfwGetKey
+test.obj : error LNK2001: 无法解析的外部符号 _glfwTerminate
+test.obj : error LNK2001: 无法解析的外部符号 _glfwPollEvents
+test.obj : error LNK2001: 无法解析的外部符号 _glfwInit
+test.obj : error LNK2001: 无法解析的外部符号 _glfwSetWindowShouldClose
+test.obj : error LNK2001: 无法解析的外部符号 _glfwSetScrollCallback
+test.obj : error LNK2001: 无法解析的外部符号 _glfwCreateWindow
+test.obj : error LNK2001: 无法解析的外部符号 _glfwWindowHint
+test.obj : error LNK2001: 无法解析的外部符号 _glfwSetInputMode
+test.obj : error LNK2001: 无法解析的外部符号 _glfwMakeContextCurrent
+test.obj : error LNK2001: 无法解析的外部符号 "public: char const * __thiscall Assimp::Importer::GetErrorString(void)const " (?GetErrorString@Importer@Assimp@@QBEPBDXZ)
+test.obj : error LNK2001: 无法解析的外部符号 "public: struct aiScene const * __thiscall Assimp::Importer::ReadFile(char const *,unsigned int)" (?ReadFile@Importer@Assimp@@QAEPBUaiScene@@PBDI@Z)
+test.obj : error LNK2001: 无法解析的外部符号 "public: __thiscall Assimp::Importer::~Importer(void)" (??1Importer@Assimp@@QAE@XZ)
+test.obj : error LNK2001: 无法解析的外部符号 "public: __thiscall Assimp::Importer::Importer(void)" (??0Importer@Assimp@@QAE@XZ)
+test.obj : error LNK2001: 无法解析的外部符号 _glfwGetProcAddress
+test.obj : error LNK2001: 无法解析的外部符号 _aiGetMaterialTexture
+test.obj : error LNK2001: 无法解析的外部符号 _glfwSetCursorPosCallback
+test.obj : error LNK2001: 无法解析的外部符号 _glfwWindowShouldClose
+D:\大学资料\课程资料\计算机图形学\作业\model_test\Release\work.exe : fatal error LNK1120: 22 个无法解析的外部命令
