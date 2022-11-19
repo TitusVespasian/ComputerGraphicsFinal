@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="头文件\general">
+      <UniqueIdentifier>{9d085ea3-7e34-4fd5-b72b-97a6a588ea50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\animation">
+      <UniqueIdentifier>{566fc2e5-155c-4a38-a8be-7633d80c61d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="资源文件\model">
+      <UniqueIdentifier>{c2d35ac4-e963-4abc-8667-4873a0f52bed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="资源文件\scene">
+      <UniqueIdentifier>{98c8d8a7-7ec7-4fd7-8a9d-53353f027616}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="1.model_loading.fs">
+      <Filter>资源文件\model</Filter>
+    </None>
+    <None Include="1.model_loading.vs">
+      <Filter>资源文件\model</Filter>
+    </None>
+    <None Include="anim_model.fs">
+      <Filter>资源文件\model</Filter>
+    </None>
+    <None Include="anim_model.vs">
+      <Filter>资源文件\model</Filter>
+    </None>
+    <None Include="shaders\scene\model_loading.fs">
+      <Filter>资源文件\scene</Filter>
+    </None>
+    <None Include="shaders\scene\model_loading.vs">
+      <Filter>资源文件\scene</Filter>
+    </None>
+    <None Include="shaders\scene\model_loading_noneTexture.fs">
+      <Filter>资源文件\scene</Filter>
+    </None>
+    <None Include="shaders\scene\model_loading_withTexture.fs">
+      <Filter>资源文件\scene</Filter>
+    </None>
+    <None Include="shaders\scene\skybox.fs">
+      <Filter>资源文件\scene</Filter>
+    </None>
+    <None Include="shaders\scene\skybox.vs">
+      <Filter>资源文件\scene</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="animation\animation.h">
+      <Filter>头文件\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="animation\animator.h">
+      <Filter>头文件\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="animation\animdata.h">
+      <Filter>头文件\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="animation\assimp_glm_helpers.h">
+      <Filter>头文件\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="animation\bone.h">
+      <Filter>头文件\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="animation\model_animation.h">
+      <Filter>头文件\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="general\camera.h">
+      <Filter>头文件\general</Filter>
+    </ClInclude>
+    <ClInclude Include="general\mesh.h">
+      <Filter>头文件\general</Filter>
+    </ClInclude>
+    <ClInclude Include="general\model.h">
+      <Filter>头文件\general</Filter>
+    </ClInclude>
+    <ClInclude Include="general\shader.h">
+      <Filter>头文件\general</Filter>
+    </ClInclude>
+    <ClInclude Include="general\shader_m.h">
+      <Filter>头文件\general</Filter>
+    </ClInclude>
+    <ClInclude Include="skybox.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\glad.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="main_ms.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
