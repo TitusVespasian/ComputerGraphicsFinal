@@ -6,13 +6,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <stb_image.h>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-
-#include "mesh.h"
-#include "shader.h"
+#include <general/mesh.h>
+#include <general/shader.h>
 
 #include <string>
 #include <fstream>
@@ -22,7 +21,7 @@
 #include <vector>
 using namespace std;
 
-unsigned int TextureFromFile(const char* path, const string& directory, bool gamma = false);
+static unsigned int TextureFromFile(const char* path, const string& directory, bool gamma = false);
 
 class Model
 {
@@ -32,11 +31,13 @@ public:
     vector<Mesh>    meshes;
     string directory;
     bool gammaCorrection;
+    bool if_mat;
 
     // constructor, expects a filepath to a 3D model.
-    Model(string const& path, bool gamma = false) : gammaCorrection(gamma)
+    Model(string const& path, bool if_mat = false, bool gamma = false) : gammaCorrection(gamma)
     {
         loadModel(path);
+        this->if_mat = if_mat;
     }
 
     // draws the model, and thus all its meshes
@@ -98,9 +99,9 @@ private:
             Vertex vertex;
             glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
             // positions
-            vector.x = 0.001 * mesh->mVertices[i].x;
-            vector.y = 0.001 * mesh->mVertices[i].y;
-            vector.z = 0.001 * mesh->mVertices[i].z;
+            vector.x = mesh->mVertices[i].x;
+            vector.y = mesh->mVertices[i].y;
+            vector.z = mesh->mVertices[i].z;
             vertex.Position = vector;
             // normals
             if (mesh->HasNormals())
@@ -117,8 +118,7 @@ private:
                 // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 
                 // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
                 vec.x = mesh->mTextureCoords[0][i].x;
-                //==问题出在这里了===
-                vec.y = 1.0 - mesh->mTextureCoords[0][i].y;
+                vec.y = mesh->mTextureCoords[0][i].y;
                 vertex.TexCoords = vec;
                 // tangent
                 vector.x = mesh->mTangents[i].x;
@@ -152,15 +152,17 @@ private:
         // diffuse: texture_diffuseN
         // specular: texture_specularN
         // normal: texture_normalN
-        //读取mtl中的kd
         Material mat;
-        aiColor3D color;
-        material->Get(AI_MATKEY_COLOR_AMBIENT, color);
-        mat.Ka = glm::vec4(color.r, color.g, color.b, 1.0);
-        material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-        mat.Kd = glm::vec4(color.r, color.g, color.b, 1.0);
-        material->Get(AI_MATKEY_COLOR_SPECULAR, color);
-        mat.Ks = glm::vec4(color.r, color.g, color.b, 1.0);
+        if (this->if_mat)
+        { //读取mtl中的kd
+            aiColor3D color;
+            material->Get(AI_MATKEY_COLOR_AMBIENT, color);
+            mat.Ka = glm::vec4(color.r, color.g, color.b, 1.0);
+            material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+            mat.Kd = glm::vec4(color.r, color.g, color.b, 1.0);
+            material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+            mat.Ks = glm::vec4(color.r, color.g, color.b, 1.0);
+        }
 
 
         // 1. diffuse maps
@@ -176,8 +178,12 @@ private:
         std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
-        // return a mesh object created from the extracted mesh data
-        return Mesh(vertices, indices, textures, mat);
+        if (if_mat = false)
+        { // return a mesh object created from the extracted mesh data
+            return Mesh(vertices, indices, textures);
+        }
+        else
+            return Mesh(vertices, indices, textures,if_mat,mat);
     }
 
     // checks all material textures of a given type and loads the textures if they're not loaded yet.
@@ -215,7 +221,7 @@ private:
 };
 
 
-unsigned int TextureFromFile(const char* path, const string& directory, bool gamma)
+static unsigned int TextureFromFile(const char* path, const string& directory, bool gamma)
 {
     string filename = string(path);
     filename = directory + '/' + filename;
@@ -224,7 +230,6 @@ unsigned int TextureFromFile(const char* path, const string& directory, bool gam
     glGenTextures(1, &textureID);
 
     int width, height, nrComponents;
-    //stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, STBI_rgb_alpha);//0
     if (data)
     {
@@ -234,9 +239,9 @@ unsigned int TextureFromFile(const char* path, const string& directory, bool gam
         else if (nrComponents == 3)
             format = GL_RGB;
         else if (nrComponents == 4)
-            format = GL_RGBA;*/
-            //==lnb==
-        format = GL_RGBA;
+            format = GL_RGBA;
+        else*/
+            format = GL_RGBA;
 
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
