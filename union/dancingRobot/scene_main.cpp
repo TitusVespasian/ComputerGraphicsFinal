@@ -313,7 +313,7 @@ int main()
 		// render the loaded model
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));			// site
-		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));		// scale
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));		// scale
 		modelShader_withTexture.setMat4("model", model);
 		Model_island.Draw(modelShader_withTexture);
 
@@ -336,7 +336,7 @@ int main()
 		// render the loaded model
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(25.0f, -4.3f, -25.0f));		   // site
-		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));		   // scale
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));		   // scale
 		modelShader_noneTexture.setMat4("model", model);
 		Model_castle.Draw(modelShader_noneTexture);
 
@@ -359,7 +359,7 @@ int main()
 		// render the loaded model
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-25.0f,1.0f, -15.0f));		   // site
-		model = glm::scale(model, glm::vec3(1000.0, 1000.0, 1000.0));		   // scale
+		model = glm::scale(model, glm::vec3(1.f, 1.f, 1.f));		   // scale
 		modelShader_noneTexture.setMat4("model", model);
 		Model_smallIsland.Draw(modelShader_noneTexture);
 

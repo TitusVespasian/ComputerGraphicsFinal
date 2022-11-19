@@ -10,6 +10,7 @@
 #include <animation/animator.h>
 #include <animation/model_animation.h>
 #include <skybox.hpp>
+#
 
 
 #include <iostream>
@@ -93,9 +94,9 @@ int main()
 	Model backgroundModel("resources/backpack/backpack.obj");
 	//scene
 	//-----------
-	Model Model_castle("resources/sceneMaterial/cartoonCastle/Cartoon castle.obj");
-	Model Model_island("resources/sceneMaterial/Small Tropical Island/Small Tropical Island.obj");
-	Model Model_smallIsland("resources/sceneMaterial/island/island.obj");
+	Model Model_castle("resources/sceneMaterial/cartoonCastle/Cartoon castle.obj",true);
+	Model Model_island("resources/sceneMaterial/Small Tropical Island/Small Tropical Island.obj",true);
+	Model Model_smallIsland("resources/sceneMaterial/island/island.obj", true);
 
 	//load skybox
 	//-----------
@@ -149,18 +150,18 @@ int main()
 
 		// render the loaded model
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(.5f, .5f, .5f));	// it's a bit too big for our scene, so scale it down
+		model = glm::translate(model, glm::vec3(10.0f, 0.0f, 0.f)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 		ourShader.setMat4("model", model);
 		ourModel.Draw(ourShader);
 
-		backgroundShader.use();
-		backgroundShader.setMat4("projection", projection);
-		backgroundShader.setMat4("view", view);
-		model = glm::translate(model, glm::vec3(-1.0f, -1.0f, -1.0f)); // translate it down so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	// it's a bit too big for our scene, so scale it down
-		backgroundShader.setMat4("model", model);
-		backgroundModel.Draw(backgroundShader);
+		//backgroundShader.use();
+		//backgroundShader.setMat4("projection", projection);
+		//backgroundShader.setMat4("view", view);
+		//model = glm::translate(model, glm::vec3(-1.0f, -1.0f, -1.0f)); // translate it down so it's at the center of the scene
+		//model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));	// it's a bit too big for our scene, so scale it down
+		//backgroundShader.setMat4("model", model);
+		//backgroundModel.Draw(backgroundShader);
 
 		//skybox
 		skyboxShader.use();
@@ -218,9 +219,9 @@ int main()
 		// render the loaded model
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));			// site
-		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));		// scale
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));		// scale
 		modelShader_withTexture.setMat4("model", model);
-		//Model_island.Draw(modelShader_withTexture);
+		Model_island.Draw(modelShader_withTexture);
 
 		// -------------------------------- MODEL castle --------------------------------
 		modelShader_noneTexture.use();
@@ -241,9 +242,9 @@ int main()
 		// render the loaded model
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(25.0f, -4.3f, -25.0f));		   // site
-		model = glm::scale(model, glm::vec3(100.0f, 100.0f, 100.0f));		   // scale
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));		   // scale
 		modelShader_noneTexture.setMat4("model", model);
-		//Model_castle.Draw(modelShader_noneTexture);
+		Model_castle.Draw(modelShader_noneTexture);
 
 		// -------------------------------- MODEL smallIsland --------------------------------
 		modelShader_noneTexture.use();
@@ -264,9 +265,9 @@ int main()
 		// render the loaded model
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-25.0f, 1.0f, -15.0f));		   // site
-		model = glm::scale(model, glm::vec3(1000.0, 1000.0, 1000.0));		   // scale
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));		   // scale
 		modelShader_noneTexture.setMat4("model", model);
-		//Model_smallIsland.Draw(modelShader_noneTexture);
+		Model_smallIsland.Draw(modelShader_noneTexture);
 
 
 
