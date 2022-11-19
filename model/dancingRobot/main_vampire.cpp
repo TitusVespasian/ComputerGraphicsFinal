@@ -90,6 +90,13 @@ int main()
 	Animation danceAnimation("resources/objects/girl/Hip Hop Dancing.dae", &ourModel);
 	Animator animator(&danceAnimation);//start of the animator
 
+	// build and compile shaders
+	// -------------------------
+	Shader backgroundShader("1.model_loading.vs", "1.model_loading.fs");
+
+	// load models
+	// -----------
+	Model backgroundModel("resources/backpack/backpack.obj");
 
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -123,6 +130,8 @@ int main()
 		ourShader.setMat4("projection", projection);
 		ourShader.setMat4("view", view);
 
+
+
 		auto transforms = animator.GetFinalBoneMatrices();
 		for (int i = 0; i < transforms.size(); ++i)
 			ourShader.setMat4("finalBonesMatrices[" + std::to_string(i) + "]", transforms[i]);
@@ -134,6 +143,14 @@ int main()
 		model = glm::scale(model, glm::vec3(.5f, .5f, .5f));	// it's a bit too big for our scene, so scale it down
 		ourShader.setMat4("model", model);
 		ourModel.Draw(ourShader);
+
+		backgroundShader.use();
+		backgroundShader.setMat4("projection", projection);
+		backgroundShader.setMat4("view", view);
+		model = glm::translate(model, glm::vec3(-1.0f, -1.0f, -1.0f)); // translate it down so it's at the center of the scene
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	// it's a bit too big for our scene, so scale it down
+		backgroundShader.setMat4("model", model);
+		backgroundModel.Draw(backgroundShader);
 
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
