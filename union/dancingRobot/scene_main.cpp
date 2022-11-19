@@ -170,9 +170,9 @@ int main()
 	Shader modelShader_noneTexture("shaders/scene/model_loading.vs", "shaders/scene/model_loading_noneTexture.fs");
 	Shader modelShader_withTexture("shaders/scene/model_loading.vs", "shaders/scene/model_loading_withTexture.fs");
 	// load models
-	Model Model_castle("resources/sceneMaterial/cartoonCastle/Cartoon castle.obj",true);
-	Model Model_island("resources/sceneMaterial/Small Tropical Island/Small Tropical Island.obj",true);
-	Model Model_smallIsland("resources/sceneMaterial/island/island.obj",true);
+	Model Model_castle("resources/sceneMaterial/cartoonCastle/Cartoon castle.obj",true,false);
+	Model Model_island("resources/sceneMaterial/Small Tropical Island/Small Tropical Island.obj",true,false);
+	Model Model_smallIsland("resources/sceneMaterial/island/island.obj",true,false);
 
 	//  =================== skybox ===================
 	float skyboxVertices[] = {

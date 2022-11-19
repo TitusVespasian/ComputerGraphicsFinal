@@ -141,7 +141,7 @@ private:
         // The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
         // again translates to 3/2 floats which translates to a byte array.
         //lnb
-        if(if_mat=false)
+        if(if_mat==false)
             glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
         else
         { 

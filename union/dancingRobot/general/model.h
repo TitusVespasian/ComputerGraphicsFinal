@@ -36,8 +36,8 @@ public:
     // constructor, expects a filepath to a 3D model.
     Model(string const& path, bool if_mat = false, bool gamma = false) : gammaCorrection(gamma)
     {
-        loadModel(path);
         this->if_mat = if_mat;
+        loadModel(path);
     }
 
     // draws the model, and thus all its meshes
@@ -178,7 +178,7 @@ private:
         std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
-        if (if_mat = false)
+        if (if_mat == false)
         { // return a mesh object created from the extracted mesh data
             return Mesh(vertices, indices, textures);
         }
