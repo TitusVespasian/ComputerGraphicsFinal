@@ -15,13 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="glad.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="modelWithBox.cpp">
+    <ClCompile Include="scene_main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,13 +41,13 @@
     <ClInclude Include="shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="chooseHead.h">
+    <ClInclude Include="scene_head.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="shader\model_loading.fs">
+    <None Include="shader\model_loading_noneTexture.fs">
       <Filter>资源文件</Filter>
     </None>
     <None Include="shader\model_loading.vs">
@@ -60,6 +57,9 @@
       <Filter>资源文件</Filter>
     </None>
     <None Include="shader\skybox.vs">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="shader\model_loading_withTexture.fs">
       <Filter>资源文件</Filter>
     </None>
   </ItemGroup>
