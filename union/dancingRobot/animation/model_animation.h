@@ -35,12 +35,13 @@ public:
 	vector<Mesh>    meshes;
 	string directory;
 	bool gammaCorrection;
-
+	bool if_mat;
 
 
 	// constructor, expects a filepath to a 3D model.
-	Model(string const& path, bool gamma = false) : gammaCorrection(gamma)
+	Model(string const& path, bool if_mat = false, bool gamma = false) : gammaCorrection(gamma)
 	{
+		this->if_mat = if_mat;
 		loadModel(path);
 	}
 
@@ -141,6 +142,21 @@ private:
 		}
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
+		// diffuse: texture_diffuseN
+		// specular: texture_specularN
+		// normal: texture_normalN
+		Material mat;
+		if (this->if_mat)
+		{ //¶ÁÈ¡mtlÖÐµÄkd
+			aiColor3D color;
+			material->Get(AI_MATKEY_COLOR_AMBIENT, color);
+			mat.Ka = glm::vec4(color.r, color.g, color.b, 1.0);
+			material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+			mat.Kd = glm::vec4(color.r, color.g, color.b, 1.0);
+			material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+			mat.Ks = glm::vec4(color.r, color.g, color.b, 1.0);
+		}
+
 		vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 		vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
@@ -152,7 +168,12 @@ private:
 
 		ExtractBoneWeightForVertices(vertices, mesh, scene);
 
-		return Mesh(vertices, indices, textures);
+		if (if_mat == false)
+		{ // return a mesh object created from the extracted mesh data
+			return Mesh(vertices, indices, textures);
+		}
+		else
+			return Mesh(vertices, indices, textures, if_mat, mat);
 	}
 
 	void SetVertexBoneData(Vertex& vertex, int boneID, float weight)
