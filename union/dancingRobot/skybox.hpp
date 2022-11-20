@@ -112,8 +112,8 @@ public:
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		// load textures
-		string skyBoxPath = "resources/skyBoxMaterial/skyBox/";
-		string skyBoxType = ".png";
+		string skyBoxPath = "resources/skyBoxMaterial/skybox2/";
+		string skyBoxType = ".bmp";
 		vector<std::string> faces
 		{
 			string(skyBoxPath + "right" + skyBoxType),

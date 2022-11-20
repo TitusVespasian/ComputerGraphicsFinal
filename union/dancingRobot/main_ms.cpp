@@ -21,8 +21,8 @@ void processInput(GLFWwindow* window);
 
 /********************************************* 全局变量/宏定义 *********************************************/
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1422;
+const unsigned int SCR_HEIGHT = 800;
 
 // camera
 Camera camera(glm::vec3(20.0f, 3.0f, -20.0f));
@@ -54,6 +54,16 @@ const float e1 = 8000.0f;
 const float e2 = 10867.0f;
 const float e3 = 18933.0f;
 const float e4 = 24533.0f;
+
+
+//
+glm::vec3 lampPos(0.0f, 20.0f, 0.0f);
+
+//model position
+glm::vec3 castlePos = glm::vec3(25.0f, -4.3f, -25.0f);
+glm::vec3 islandPos = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 smallIslandPos = glm::vec3(-25.0f, 1.0f, -15.0f);
+glm::vec3 dirLightDirection = glm::vec3(0.0f, -1.0f, 0.0f);
 
 int main()
 {
@@ -234,25 +244,32 @@ int main()
 		glm::vec3 lampPos(0.5f, 1.0f, 1.5f);
 		// ================================== MODEL parameter define ==================================
 		// 含贴图
-		GLint lightAmbientLoc = glGetUniformLocation(modelShader_withTexture.ID, "light.ambient");
-		GLint lightDiffuseLoc = glGetUniformLocation(modelShader_withTexture.ID, "light.diffuse");
-		GLint lightSpecularLoc = glGetUniformLocation(modelShader_withTexture.ID, "light.specular");
-		GLint lightPosLoc = glGetUniformLocation(modelShader_withTexture.ID, "light.position");
-		GLint attConstant = glGetUniformLocation(modelShader_withTexture.ID, "light.constant");
-		GLint attLinear = glGetUniformLocation(modelShader_withTexture.ID, "light.linear");
-		GLint attQuadratic = glGetUniformLocation(modelShader_withTexture.ID, "light.quadratic");
+		GLint pointLightAmbientLoc = glGetUniformLocation(modelShader_withTexture.ID, "pointLights[0].ambient");
+		GLint pointLightDiffuseLoc = glGetUniformLocation(modelShader_withTexture.ID, "pointLights[0].diffuse");
+		GLint pointLightSpecularLoc = glGetUniformLocation(modelShader_withTexture.ID, "pointLights[0].specular");
+		GLint pointLightPosLoc = glGetUniformLocation(modelShader_withTexture.ID, "pointLights[0].position");
+		GLint attConstant = glGetUniformLocation(modelShader_withTexture.ID, "pointLights[0].constant");
+		GLint attLinear = glGetUniformLocation(modelShader_withTexture.ID, "pointLights[0].linear");
+		GLint attQuadratic = glGetUniformLocation(modelShader_withTexture.ID, "pointLights[0].quadratic");
 		GLint shininess = glGetUniformLocation(modelShader_withTexture.ID, "shininess");
+		GLint dirLightAmbientLoc = glGetUniformLocation(modelShader_withTexture.ID, "dirLight.ambient");
+		GLint dirLightDiffuseLoc = glGetUniformLocation(modelShader_withTexture.ID, "dirLight.diffuse");
+		GLint dirLightSpecularLoc = glGetUniformLocation(modelShader_withTexture.ID, "dirLight.specular");
+		GLint dirLightDirectionLoc = glGetUniformLocation(modelShader_withTexture.ID, "dirLight.position");
 
 		// 不含贴图
-		GLint lightAmbientLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "light.ambient");
-		GLint lightDiffuseLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "light.diffuse");
-		GLint lightSpecularLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "light.specular");
-		GLint lightPosLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "light.position");
-		GLint attConstant_none = glGetUniformLocation(modelShader_noneTexture.ID, "light.constant");
-		GLint attLinear_none = glGetUniformLocation(modelShader_noneTexture.ID, "light.linear");
-		GLint attQuadratic_none = glGetUniformLocation(modelShader_noneTexture.ID, "light.quadratic");
+		GLint pointLightAmbientLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "pointLights[0].ambient");
+		GLint pointLightDiffuseLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "pointLights[0].diffuse");
+		GLint pointLightSpecularLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "pointLights[0].specular");
+		GLint pointLightPosLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "pointLights[0].position");
+		GLint attConstant_none = glGetUniformLocation(modelShader_noneTexture.ID, "pointLights[0].constant");
+		GLint attLinear_none = glGetUniformLocation(modelShader_noneTexture.ID, "pointLights[0].linear");
+		GLint attQuadratic_none = glGetUniformLocation(modelShader_noneTexture.ID, "pointLights[0].quadratic");
 		GLint shininess_none = glGetUniformLocation(modelShader_noneTexture.ID, "shininess");
-
+		GLint dirLightAmbientLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "dirLight.ambient");
+		GLint dirLightDiffuseLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "dirLight.diffuse");
+		GLint dirLightSpecularLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "dirLight.specular");
+		GLint dirLightDirectionLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "dirLight.direction");
 		// 设置观察者位置
 		GLint viewPosLoc = glGetUniformLocation(modelShader_withTexture.ID, "viewPos");
 		glUniform3f(viewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
@@ -260,16 +277,23 @@ int main()
 		view = camera.GetViewMatrix();
 		model = glm::mat4(1.0f);
 
+
 		// -------------------------------- MODEL island --------------------------------
 		modelShader_withTexture.use();
+		// 设置光源属性 平行光源
+		glUniform3f(dirLightAmbientLoc, 0.8f, 0.8f, 0.9f);
+		glUniform3f(dirLightDiffuseLoc, 0.5f, 0.5f, 0.5f);
+		glUniform3f(dirLightSpecularLoc, 0.5f, 0.5f, 0.5f);
+		glUniform3f(dirLightDirectionLoc, dirLightDirection.x, dirLightDirection.y, dirLightDirection.z);
 		// 设置光源属性 点光源
-		glUniform3f(lightAmbientLoc, 1.0f, 1.0f, 1.0f);
-		glUniform3f(lightDiffuseLoc, 0.5f, 0.5f, 0.5f);
-		glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
-		glUniform3f(lightPosLoc, lampPos.x, lampPos.y, lampPos.z);
+		glm::vec3 landLightPos = glm::vec3(islandPos.x, islandPos.y + 5, islandPos.z);
+		glUniform3f(pointLightAmbientLoc, 0.7f, 0.7f, 0.8f);
+		glUniform3f(pointLightDiffuseLoc, 0.5f, 0.5f, 0.5f);
+		glUniform3f(pointLightSpecularLoc, 1.0f, 1.0f, 1.0f);
+		glUniform3f(pointLightPosLoc, landLightPos.x, landLightPos.y, landLightPos.z);
 		// 设置衰减系数
 		glUniform1f(attConstant, 1.0f);
-		glUniform1f(attLinear, 0.09f);
+		glUniform1f(attLinear, 0.009f);
 		glUniform1f(attQuadratic, 0.032f);
 		// 亮度
 		glUniform1f(shininess, 64.0f);
@@ -278,18 +302,25 @@ int main()
 		modelShader_withTexture.setMat4("view", view);
 		// render the loaded model
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));			// site
+		model = glm::translate(model, islandPos);			// site
+
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));		// scale
 		modelShader_withTexture.setMat4("model", model);
 		Model_island.Draw(modelShader_withTexture);
 
 		// -------------------------------- MODEL castle --------------------------------
 		modelShader_noneTexture.use();
+		// 设置光源属性 平行光源
+		glUniform3f(dirLightAmbientLoc_none, 0.1f, 0.1f, 0.1f);
+		glUniform3f(dirLightDiffuseLoc_none, 0.8f, 0.8f, 0.8f);
+		glUniform3f(dirLightSpecularLoc_none, 0.5f, 0.5f, 0.5f);
+		glUniform3f(dirLightDirectionLoc_none, dirLightDirection.x, dirLightDirection.y, dirLightDirection.z);
 		// 设置光源属性 点光源
-		glUniform3f(lightAmbientLoc_none, 5.0f, 5.0f, 5.0f);
-		glUniform3f(lightDiffuseLoc_none, 0.5f, 0.5f, 0.5f);
-		glUniform3f(lightSpecularLoc_none, 1.0f, 1.0f, 1.0f);
-		glUniform3f(lightPosLoc_none, lampPos.x, lampPos.y, lampPos.z);
+		glm::vec3 castleLightPos = glm::vec3(castlePos.x, castlePos.y + 6, castlePos.z);
+		glUniform3f(pointLightAmbientLoc_none, 0.95f, 0.8f, 0.85f);
+		glUniform3f(pointLightDiffuseLoc_none, 0.5f, 0.5f, 0.5f);
+		glUniform3f(pointLightSpecularLoc_none, 1.0f, 1.0f, 1.0f);
+		glUniform3f(pointLightPosLoc_none, castleLightPos.x, castleLightPos.y, castleLightPos.z);
 		// 设置衰减系数
 		glUniform1f(attConstant_none, 1.0f);
 		glUniform1f(attLinear_none, 0.09f);
@@ -301,18 +332,25 @@ int main()
 		modelShader_noneTexture.setMat4("view", view);
 		// render the loaded model
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(25.0f, -4.3f, -25.0f));		   // site
+		model = glm::translate(model, castlePos);		   // site
+		//model = glm::rotate(model, glm::radians(60.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));		   // scale
 		modelShader_noneTexture.setMat4("model", model);
 		Model_castle.Draw(modelShader_noneTexture);
 
 		// -------------------------------- MODEL smallIsland --------------------------------
 		modelShader_noneTexture.use();
+		// 设置光源属性 平行光源
+		glUniform3f(dirLightAmbientLoc_none, 0.40f, 0.40f, 0.40f);
+		glUniform3f(dirLightDiffuseLoc_none, 0.8f, 0.8f, 0.8f);
+		glUniform3f(dirLightSpecularLoc_none, 0.5f, 0.5f, 0.5f);
+		glUniform3f(dirLightDirectionLoc_none, dirLightDirection.x, dirLightDirection.y, dirLightDirection.z);
 		// 设置光源属性 点光源
-		glUniform3f(lightAmbientLoc_none, 5.0f, 5.0f, 5.0f);
-		glUniform3f(lightDiffuseLoc_none, 0.5f, 0.5f, 0.5f);
-		glUniform3f(lightSpecularLoc_none, 1.0f, 1.0f, 1.0f);
-		glUniform3f(lightPosLoc_none, lampPos.x, lampPos.y, lampPos.z);
+		glm::vec3 SLandLightPos = glm::vec3(smallIslandPos.x, smallIslandPos.y + 2, smallIslandPos.z);
+		glUniform3f(pointLightAmbientLoc_none, 1.0f, 1.0f, 1.0f);
+		glUniform3f(pointLightDiffuseLoc_none, 0.5f, 0.5f, 0.5f);
+		glUniform3f(pointLightSpecularLoc_none, 1.0f, 1.0f, 1.0f);
+		glUniform3f(pointLightPosLoc_none, SLandLightPos.x, SLandLightPos.y, SLandLightPos.z);
 		// 设置衰减系数
 		glUniform1f(attConstant_none, 1.0f);
 		glUniform1f(attLinear_none, 0.09f);
@@ -324,11 +362,10 @@ int main()
 		modelShader_noneTexture.setMat4("view", view);
 		// render the loaded model
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-25.0f, 1.0f, -15.0f));		   // site
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));		   // scale
+		model = glm::translate(model, smallIslandPos);		   // site
+		model = glm::scale(model, glm::vec3(1.0, 1.0, 1.0));		   // scale
 		modelShader_noneTexture.setMat4("model", model);
 		Model_smallIsland.Draw(modelShader_noneTexture);
-
 
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
