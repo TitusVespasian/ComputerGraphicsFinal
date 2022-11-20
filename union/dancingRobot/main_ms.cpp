@@ -36,6 +36,27 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+//animation id
+const int a0 = 0;
+const int a1 = 1;
+const int a2 = 2;
+const int a3 = 3;
+const int a4 = 4;
+
+//animation start time
+const float s0 = 0.0f;
+const float s1 = 5667.0f;
+const float s2 = 9500.0f;
+const float s3 = 14500.0f;
+const float s4 = 23233.0f;
+
+//animation end time
+const float e0 = 1433.0f;
+const float e1 = 8000.0f;
+const float e2 = 10867.0f;
+const float e3 = 18933.0f;
+const float e4 = 24533.0f;
+
 int main()
 {
 	// glfw: initialize and configure
@@ -88,8 +109,8 @@ int main()
 
 	// load models
 	// -----------
-	Model ourModel("resources/objects/girl/Hip Hop Dancing.dae");
-	Animation danceAnimation("resources/objects/girl/Hip Hop Dancing.dae", &ourModel);
+	Model ourModel("resources/objects/dance/Swing Dancing.dae");
+	Animation danceAnimation("resources/objects/dance/Swing Dancing.dae", &ourModel);
 	Animator animator(&danceAnimation);//start of the animator
 	Model backgroundModel("resources/backpack/backpack.obj");
 	//scene
@@ -112,6 +133,9 @@ int main()
 	Shader modelShader_noneTexture("shaders/scene/model_loading.vs", "shaders/scene/model_loading_noneTexture.fs");
 	Shader modelShader_withTexture("shaders/scene/model_loading.vs", "shaders/scene/model_loading_withTexture.fs");
 
+	//animation id
+	int act = a0;
+
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
@@ -125,6 +149,42 @@ int main()
 		// input
 		// -----
 		processInput(window);
+
+		//change the animation
+		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+			animator.setCurrentTime(s1);
+			act = a1;
+		}
+		else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+			animator.setCurrentTime(s2);
+			act = a2;
+		}
+		else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+			animator.setCurrentTime(s3);
+			act = a3;
+		}
+		else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+			animator.setCurrentTime(s4);
+			act = a4;
+		}
+
+		//keep the animation
+		if (act == a0 && animator.getCurrentTime() >= e0) {
+			animator.setCurrentTime(s0);
+		}
+		else if (act == a1 && animator.getCurrentTime() >= e1) {
+			animator.setCurrentTime(s1);
+		}
+		else if (act == a2 && animator.getCurrentTime() >= e2) {
+			animator.setCurrentTime(s2);
+		}
+		else if (act == a3 && animator.getCurrentTime() >= e3) {
+			animator.setCurrentTime(s3);
+		}
+		else if (act == a4 && animator.getCurrentTime() >= e4) {
+			animator.setCurrentTime(s4);
+		}
+
 		animator.UpdateAnimation(deltaTime);
 
 		// render
