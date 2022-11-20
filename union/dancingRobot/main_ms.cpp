@@ -112,7 +112,7 @@ int main()
 	Model ourModel("resources/objects/dance/Swing Dancing.dae");
 	Animation danceAnimation("resources/objects/dance/Swing Dancing.dae", &ourModel);
 	Animator animator(&danceAnimation);//start of the animator
-	Model backgroundModel("resources/backpack/backpack.obj");
+	//Model backgroundModel("resources/backpack/backpack.obj");
 	//scene
 	//-----------
 	Model Model_castle("resources/sceneMaterial/cartoonCastle/Cartoon castle.obj",true);
@@ -210,7 +210,7 @@ int main()
 
 		// render the loaded model
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(23.0f, 1.2f, -23.0f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(22.7f, 1.2f, -22.7f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.5f)); // translate it down so it's at the center of the scene
 		model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.f));

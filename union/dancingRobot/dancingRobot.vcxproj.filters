@@ -30,18 +30,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="1.model_loading.fs">
-      <Filter>资源文件\model</Filter>
-    </None>
-    <None Include="1.model_loading.vs">
-      <Filter>资源文件\model</Filter>
-    </None>
-    <None Include="anim_model.fs">
-      <Filter>资源文件\model</Filter>
-    </None>
-    <None Include="anim_model.vs">
-      <Filter>资源文件\model</Filter>
-    </None>
     <None Include="shaders\scene\model_loading.fs">
       <Filter>资源文件\scene</Filter>
     </None>
@@ -59,6 +47,18 @@
     </None>
     <None Include="shaders\scene\skybox.vs">
       <Filter>资源文件\scene</Filter>
+    </None>
+    <None Include="shaders\model\1.model_loading.fs">
+      <Filter>资源文件\model</Filter>
+    </None>
+    <None Include="shaders\model\1.model_loading.vs">
+      <Filter>资源文件\model</Filter>
+    </None>
+    <None Include="shaders\model\anim_model.fs">
+      <Filter>资源文件\model</Filter>
+    </None>
+    <None Include="shaders\model\anim_model.vs">
+      <Filter>资源文件\model</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -110,9 +110,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="main_ms.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="scene_main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

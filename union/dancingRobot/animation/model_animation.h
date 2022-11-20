@@ -161,10 +161,12 @@ private:
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 		vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-		std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+		std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
 		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-		std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+		//std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+		//textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+		std::vector<Texture> shininessMaps = loadMaterialTextures(material, aiTextureType_SHININESS, "texture_shininess");
+		textures.insert(textures.end(), shininessMaps.begin(), shininessMaps.end());
 
 		ExtractBoneWeightForVertices(vertices, mesh, scene);
 

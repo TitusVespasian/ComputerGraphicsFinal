@@ -141,10 +141,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="1.model_loading.fs" />
-    <None Include="1.model_loading.vs" />
-    <None Include="anim_model.fs" />
-    <None Include="anim_model.vs" />
+    <None Include="shaders\model\1.model_loading.fs" />
+    <None Include="shaders\model\1.model_loading.vs" />
+    <None Include="shaders\model\anim_model.fs" />
+    <None Include="shaders\model\anim_model.vs" />
     <None Include="shaders\scene\model_loading.fs" />
     <None Include="shaders\scene\model_loading.vs" />
     <None Include="shaders\scene\model_loading_noneTexture.fs" />
@@ -171,12 +171,8 @@
   <ItemGroup>
     <ClCompile Include="..\glad.c" />
     <ClCompile Include="main_ms.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="scene_main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
