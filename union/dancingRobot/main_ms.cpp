@@ -12,6 +12,8 @@
 #include <skybox.hpp>
 
 #include <iostream>
+#include <wtypes.h>
+
 
 /********************************************* 函数声明 *********************************************/
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -21,8 +23,8 @@ void processInput(GLFWwindow* window);
 
 /********************************************* 全局变量/宏定义 *********************************************/
 // settings
-const unsigned int SCR_WIDTH = 1422;
-const unsigned int SCR_HEIGHT = 800;
+long SCR_WIDTH = 1422;
+long SCR_HEIGHT = 800;
 
 // camera
 Camera camera(glm::vec3(20.0f, 3.0f, -20.0f));
@@ -57,13 +59,14 @@ const float e4 = 24533.0f;
 
 
 //
-glm::vec3 lampPos(0.0f, 20.0f, 0.0f);
+const glm::vec3 lampPos(0.0f, 20.0f, 0.0f);
 
 //model position
-glm::vec3 castlePos = glm::vec3(25.0f, -4.3f, -25.0f);
-glm::vec3 islandPos = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 smallIslandPos = glm::vec3(-25.0f, 1.0f, -15.0f);
-glm::vec3 dirLightDirection = glm::vec3(0.0f, -1.0f, 0.0f);
+const glm::vec3 castlePos = glm::vec3(25.0f, -4.3f, -25.0f);
+const glm::vec3 islandPos = glm::vec3(0.0f, 0.0f, 0.0f);
+const glm::vec3 smallIslandPos = glm::vec3(-25.0f, 1.0f, -15.0f);
+const glm::vec3 dirLightDirection = glm::vec3(0.0f, -1.0f, 0.0f);
+
 
 int main()
 {
@@ -73,6 +76,8 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
+
 
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -80,7 +85,21 @@ int main()
 
 	// glfw window creation
 	// --------------------
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "JustDance", NULL, NULL);
+	//GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "JustDance", NULL, NULL);
+	int monitorCount = 0;
+	GLFWmonitor** pMonitor = glfwGetMonitors(&monitorCount);
+	int holographic_screen = -1;
+	GLFWwindow* window = NULL;
+	int w = GetSystemMetrics(SM_CXSCREEN), h = GetSystemMetrics(SM_CYSCREEN);
+	for (int i = 0; i < monitorCount; i++)
+	{
+		GLFWvidmode* mode = (GLFWvidmode*)glfwGetVideoMode(pMonitor[i]);
+		if (mode->width == w && h == mode->height)
+		{
+			holographic_screen = i;
+			window = glfwCreateWindow(w, h, "", pMonitor[holographic_screen], NULL);
+		}
+	}
 	if (window == NULL)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -109,7 +128,7 @@ int main()
 	// configure global opengl state
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
-
+	glEnable(GL_MULTISAMPLE);
 	// build and compile shaders
 	// -------------------------
 	Shader ourShader("shaders/model/anim_model.vs", "shaders/model/anim_model.fs");
