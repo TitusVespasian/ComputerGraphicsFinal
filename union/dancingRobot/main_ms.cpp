@@ -137,8 +137,8 @@ int main()
 
 	// load models
 	// -----------
-	Model ourModel("resources/objects/dance/Swing Dancing.dae");
-	Animation danceAnimation("resources/objects/dance/Swing Dancing.dae", &ourModel);
+	Model ourModel("resources/objects/dance/2.fbx");
+	Animation danceAnimation("resources/objects/dance/2.fbx", &ourModel);
 	Animator animator(&danceAnimation);//start of the animator
 	//Model backgroundModel("resources/backpack/backpack.obj");
 	//scene
