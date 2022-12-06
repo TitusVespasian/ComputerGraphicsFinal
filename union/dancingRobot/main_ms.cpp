@@ -15,13 +15,13 @@
 #include <wtypes.h>
 
 
-/********************************************* º¯ÊýÉùÃ÷ *********************************************/
+/********************************************* å‡½æ•°å£°æ˜Ž *********************************************/
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
-/********************************************* È«¾Ö±äÁ¿/ºê¶¨Òå *********************************************/
+/********************************************* å…¨å±€å˜é‡/å®å®šä¹‰ *********************************************/
 // settings
 long SCR_WIDTH = 1422;
 long SCR_HEIGHT = 800;
@@ -38,24 +38,25 @@ float lastFrame = 0.0f;
 
 //animation id
 const int a0 = 0;
-const int a1 = 1;
-const int a2 = 2;
-const int a3 = 3;
-const int a4 = 4;
+const int a1 = 1;//up
+const int a2 = 2;//down
+const int a3 = 3;//left
+const int a4 = 4;//right
 
+//30fps
 //animation start time
 const float s0 = 0.0f;
-const float s1 = 5667.0f;
-const float s2 = 9500.0f;
-const float s3 = 14500.0f;
-const float s4 = 23233.0f;
+const float s1 = 180.0f;
+const float s2 = 360.0f;
+const float s3 = 450.0f;
+const float s4 = 570.0f;
 
 //animation end time
-const float e0 = 1433.0f;
-const float e1 = 8000.0f;
-const float e2 = 10867.0f;
-const float e3 = 18933.0f;
-const float e4 = 24533.0f;
+const float e0 = 141.0f;
+const float e1 = 315.0f;
+const float e2 = 418.0f;
+const float e3 = 521.0f;
+const float e4 = 685.0f;
 
 
 //
@@ -196,23 +197,25 @@ int main()
 		}
 
 		//keep the animation
-		if (act == a0 && animator.getCurrentTime() >= e0) {
+		if (act == a0 && animator.getCurrentTime(deltaTime) >= e0) {
 			animator.setCurrentTime(s0);
 		}
-		else if (act == a1 && animator.getCurrentTime() >= e1) {
+		else if (act == a1 && animator.getCurrentTime(deltaTime) >= e1) {
 			animator.setCurrentTime(s1);
 		}
-		else if (act == a2 && animator.getCurrentTime() >= e2) {
+		else if (act == a2 && animator.getCurrentTime(deltaTime) >= e2) {
 			animator.setCurrentTime(s2);
 		}
-		else if (act == a3 && animator.getCurrentTime() >= e3) {
+		else if (act == a3 && animator.getCurrentTime(deltaTime) >= e3) {
 			animator.setCurrentTime(s3);
 		}
-		else if (act == a4 && animator.getCurrentTime() >= e4) {
-			animator.setCurrentTime(s4);
+		else if (act == a4) {
+			float t = animator.getCurrentTime(deltaTime);
+			if (t >= e4 || t < s4)
+				animator.setCurrentTime(s4);
 		}
 
-		animator.UpdateAnimation(deltaTime);
+		animator.UpdateAnimation();
 
 		// render
 		// ------
@@ -238,7 +241,7 @@ int main()
 		// render the loaded model
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(22.7f, 1.2f, -22.7f)); // translate it down so it's at the center of the scene
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));	// it's a bit too big for our scene, so scale it down
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.5f)); // translate it down so it's at the center of the scene
 		model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.f));
 		ourShader.setMat4("model", model);
@@ -262,7 +265,7 @@ int main()
 		//scene
 		glm::vec3 lampPos(0.5f, 1.0f, 1.5f);
 		// ================================== MODEL parameter define ==================================
-		// º¬ÌùÍ¼
+		// å«è´´å›¾
 		GLint pointLightAmbientLoc = glGetUniformLocation(modelShader_withTexture.ID, "pointLights[0].ambient");
 		GLint pointLightDiffuseLoc = glGetUniformLocation(modelShader_withTexture.ID, "pointLights[0].diffuse");
 		GLint pointLightSpecularLoc = glGetUniformLocation(modelShader_withTexture.ID, "pointLights[0].specular");
@@ -276,7 +279,7 @@ int main()
 		GLint dirLightSpecularLoc = glGetUniformLocation(modelShader_withTexture.ID, "dirLight.specular");
 		GLint dirLightDirectionLoc = glGetUniformLocation(modelShader_withTexture.ID, "dirLight.position");
 
-		// ²»º¬ÌùÍ¼
+		// ä¸å«è´´å›¾
 		GLint pointLightAmbientLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "pointLights[0].ambient");
 		GLint pointLightDiffuseLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "pointLights[0].diffuse");
 		GLint pointLightSpecularLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "pointLights[0].specular");
@@ -289,7 +292,7 @@ int main()
 		GLint dirLightDiffuseLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "dirLight.diffuse");
 		GLint dirLightSpecularLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "dirLight.specular");
 		GLint dirLightDirectionLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "dirLight.direction");
-		// ÉèÖÃ¹Û²ìÕßÎ»ÖÃ
+		// è®¾ç½®è§‚å¯Ÿè€…ä½ç½®
 		GLint viewPosLoc = glGetUniformLocation(modelShader_withTexture.ID, "viewPos");
 		glUniform3f(viewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
 		projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -299,22 +302,22 @@ int main()
 
 		// -------------------------------- MODEL island --------------------------------
 		modelShader_withTexture.use();
-		// ÉèÖÃ¹âÔ´ÊôÐÔ Æ½ÐÐ¹âÔ´
+		// è®¾ç½®å…‰æºå±žæ€§ å¹³è¡Œå…‰æº
 		glUniform3f(dirLightAmbientLoc, 0.8f, 0.8f, 0.9f);
 		glUniform3f(dirLightDiffuseLoc, 0.5f, 0.5f, 0.5f);
 		glUniform3f(dirLightSpecularLoc, 0.5f, 0.5f, 0.5f);
 		glUniform3f(dirLightDirectionLoc, dirLightDirection.x, dirLightDirection.y, dirLightDirection.z);
-		// ÉèÖÃ¹âÔ´ÊôÐÔ µã¹âÔ´
+		// è®¾ç½®å…‰æºå±žæ€§ ç‚¹å…‰æº
 		glm::vec3 landLightPos = glm::vec3(islandPos.x, islandPos.y + 5, islandPos.z);
 		glUniform3f(pointLightAmbientLoc, 0.7f, 0.7f, 0.8f);
 		glUniform3f(pointLightDiffuseLoc, 0.5f, 0.5f, 0.5f);
 		glUniform3f(pointLightSpecularLoc, 1.0f, 1.0f, 1.0f);
 		glUniform3f(pointLightPosLoc, landLightPos.x, landLightPos.y, landLightPos.z);
-		// ÉèÖÃË¥¼õÏµÊý
+		// è®¾ç½®è¡°å‡ç³»æ•°
 		glUniform1f(attConstant, 1.0f);
 		glUniform1f(attLinear, 0.009f);
 		glUniform1f(attQuadratic, 0.032f);
-		// ÁÁ¶È
+		// äº®åº¦
 		glUniform1f(shininess, 64.0f);
 		// view/projection transformations
 		modelShader_withTexture.setMat4("projection", projection);
@@ -329,22 +332,22 @@ int main()
 
 		// -------------------------------- MODEL castle --------------------------------
 		modelShader_noneTexture.use();
-		// ÉèÖÃ¹âÔ´ÊôÐÔ Æ½ÐÐ¹âÔ´
+		// è®¾ç½®å…‰æºå±žæ€§ å¹³è¡Œå…‰æº
 		glUniform3f(dirLightAmbientLoc_none, 0.1f, 0.1f, 0.1f);
 		glUniform3f(dirLightDiffuseLoc_none, 0.8f, 0.8f, 0.8f);
 		glUniform3f(dirLightSpecularLoc_none, 0.5f, 0.5f, 0.5f);
 		glUniform3f(dirLightDirectionLoc_none, dirLightDirection.x, dirLightDirection.y, dirLightDirection.z);
-		// ÉèÖÃ¹âÔ´ÊôÐÔ µã¹âÔ´
+		// è®¾ç½®å…‰æºå±žæ€§ ç‚¹å…‰æº
 		glm::vec3 castleLightPos = glm::vec3(castlePos.x, castlePos.y + 6, castlePos.z);
 		glUniform3f(pointLightAmbientLoc_none, 0.95f, 0.8f, 0.85f);
 		glUniform3f(pointLightDiffuseLoc_none, 0.5f, 0.5f, 0.5f);
 		glUniform3f(pointLightSpecularLoc_none, 1.0f, 1.0f, 1.0f);
 		glUniform3f(pointLightPosLoc_none, castleLightPos.x, castleLightPos.y, castleLightPos.z);
-		// ÉèÖÃË¥¼õÏµÊý
+		// è®¾ç½®è¡°å‡ç³»æ•°
 		glUniform1f(attConstant_none, 1.0f);
 		glUniform1f(attLinear_none, 0.09f);
 		glUniform1f(attQuadratic_none, 0.032f);
-		// ÁÁ¶È
+		// äº®åº¦
 		glUniform1f(shininess_none, 64.0f);
 		// view/projection transformations
 		modelShader_noneTexture.setMat4("projection", projection);
@@ -359,22 +362,22 @@ int main()
 
 		// -------------------------------- MODEL smallIsland --------------------------------
 		modelShader_noneTexture.use();
-		// ÉèÖÃ¹âÔ´ÊôÐÔ Æ½ÐÐ¹âÔ´
+		// è®¾ç½®å…‰æºå±žæ€§ å¹³è¡Œå…‰æº
 		glUniform3f(dirLightAmbientLoc_none, 0.40f, 0.40f, 0.40f);
 		glUniform3f(dirLightDiffuseLoc_none, 0.8f, 0.8f, 0.8f);
 		glUniform3f(dirLightSpecularLoc_none, 0.5f, 0.5f, 0.5f);
 		glUniform3f(dirLightDirectionLoc_none, dirLightDirection.x, dirLightDirection.y, dirLightDirection.z);
-		// ÉèÖÃ¹âÔ´ÊôÐÔ µã¹âÔ´
+		// è®¾ç½®å…‰æºå±žæ€§ ç‚¹å…‰æº
 		glm::vec3 SLandLightPos = glm::vec3(smallIslandPos.x, smallIslandPos.y + 2, smallIslandPos.z);
 		glUniform3f(pointLightAmbientLoc_none, 1.0f, 1.0f, 1.0f);
 		glUniform3f(pointLightDiffuseLoc_none, 0.5f, 0.5f, 0.5f);
 		glUniform3f(pointLightSpecularLoc_none, 1.0f, 1.0f, 1.0f);
 		glUniform3f(pointLightPosLoc_none, SLandLightPos.x, SLandLightPos.y, SLandLightPos.z);
-		// ÉèÖÃË¥¼õÏµÊý
+		// è®¾ç½®è¡°å‡ç³»æ•°
 		glUniform1f(attConstant_none, 1.0f);
 		glUniform1f(attLinear_none, 0.09f);
 		glUniform1f(attQuadratic_none, 0.032f);
-		// ÁÁ¶È
+		// äº®åº¦
 		glUniform1f(shininess_none, 64.0f);
 		// view/projection transformations
 		modelShader_noneTexture.setMat4("projection", projection);
