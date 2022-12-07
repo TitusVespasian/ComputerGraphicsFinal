@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -145,10 +145,14 @@
     <None Include="shaders\model\1.model_loading.vs" />
     <None Include="shaders\model\anim_model.fs" />
     <None Include="shaders\model\anim_model.vs" />
+    <None Include="shaders\scene\dirShadow.fs" />
+    <None Include="shaders\scene\dirShadow.vs" />
     <None Include="shaders\scene\model_loading.fs" />
     <None Include="shaders\scene\model_loading.vs" />
     <None Include="shaders\scene\model_loading_noneTexture.fs" />
     <None Include="shaders\scene\model_loading_withTexture.fs" />
+    <None Include="shaders\scene\shadowTest.fs" />
+    <None Include="shaders\scene\shadowTest.vs" />
     <None Include="shaders\scene\skybox.fs" />
     <None Include="shaders\scene\skybox.vs" />
   </ItemGroup>

@@ -60,6 +60,18 @@
     <None Include="shaders\model\anim_model.vs">
       <Filter>资源文件\model</Filter>
     </None>
+    <None Include="shaders\scene\dirShadow.fs">
+      <Filter>资源文件\scene</Filter>
+    </None>
+    <None Include="shaders\scene\dirShadow.vs">
+      <Filter>资源文件\scene</Filter>
+    </None>
+    <None Include="shaders\scene\shadowTest.fs">
+      <Filter>资源文件\scene</Filter>
+    </None>
+    <None Include="shaders\scene\shadowTest.vs">
+      <Filter>资源文件\scene</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation\animation.h">
