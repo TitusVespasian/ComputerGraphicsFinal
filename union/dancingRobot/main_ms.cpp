@@ -67,7 +67,7 @@ const glm::vec3 castlePos = glm::vec3(25.0f, -4.3f, -25.0f);
 const glm::vec3 islandPos = glm::vec3(0.0f, 0.0f, 0.0f);
 const glm::vec3 smallIslandPos = glm::vec3(-25.0f, 1.0f, -15.0f);
 const glm::vec3 dirLightDirection = glm::vec3(0.0f, -1.0f, 0.0f);
-
+const glm::vec3 stagePos = glm::vec3(25.0f, 1.6f, -5.0f);
 
 int main()
 {
@@ -146,7 +146,7 @@ int main()
 	Model Model_castle("resources/sceneMaterial/cartoonCastle/Cartoon castle.obj",true);
 	Model Model_island("resources/sceneMaterial/Small Tropical Island/Small Tropical Island.obj",true);
 	Model Model_smallIsland("resources/sceneMaterial/island/island.obj", true);
-
+	Model Model_stage("resources/sceneMaterial/Stage/stage.obj", true);
 	//load skybox
 	//-----------
 	skybox skyBoxI;
@@ -329,7 +329,36 @@ int main()
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));		// scale
 		modelShader_withTexture.setMat4("model", model);
 		Model_island.Draw(modelShader_withTexture);
+		// -------------------------------- MODEL stage --------------------------------
 
+		modelShader_withTexture.use();
+		// 设置光源属性 平行光源
+		glUniform3f(dirLightAmbientLoc, 0.8f, 0.8f, 0.9f);
+		glUniform3f(dirLightDiffuseLoc, 0.5f, 0.5f, 0.5f);
+		glUniform3f(dirLightSpecularLoc, 0.5f, 0.5f, 0.5f);
+		glUniform3f(dirLightDirectionLoc, dirLightDirection.x, dirLightDirection.y, dirLightDirection.z);
+		// 设置光源属性 点光源
+		glm::vec3 stageLightPos = glm::vec3(stagePos.x, stagePos.y + 5, stagePos.z);
+		glUniform3f(pointLightAmbientLoc, 0.7f, 0.7f, 0.8f);
+		glUniform3f(pointLightDiffuseLoc, 0.5f, 0.5f, 0.5f);
+		glUniform3f(pointLightSpecularLoc, 1.0f, 1.0f, 1.0f);
+		glUniform3f(pointLightPosLoc, stageLightPos.x, stageLightPos.y, stageLightPos.z);
+		// 设置衰减系数
+		glUniform1f(attConstant, 1.0f);
+		glUniform1f(attLinear, 0.009f);
+		glUniform1f(attQuadratic, 0.032f);
+		// 亮度
+		glUniform1f(shininess, 64.0f);
+		// view/projection transformations
+		modelShader_withTexture.setMat4("projection", projection);
+		modelShader_withTexture.setMat4("view", view);
+		// render the loaded model
+		model = glm::mat4(1.0f);
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0, 1.0, 0.0));
+		model = glm::translate(model, stagePos);			// site
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));		// scale
+		modelShader_withTexture.setMat4("model", model);
+		Model_stage.Draw(modelShader_withTexture);
 		// -------------------------------- MODEL castle --------------------------------
 		modelShader_noneTexture.use();
 		// 设置光源属性 平行光源
