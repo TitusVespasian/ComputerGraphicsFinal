@@ -42,13 +42,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -155,6 +155,10 @@
     <None Include="shaders\scene\shadowTest.vs" />
     <None Include="shaders\scene\skybox.fs" />
     <None Include="shaders\scene\skybox.vs" />
+    <None Include="shaders\water\water-frag.fs" />
+    <None Include="shaders\water\water-tess-control.glsl" />
+    <None Include="shaders\water\water-tess-eval.glsl" />
+    <None Include="shaders\water\water-vert.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation\animation.h" />
@@ -171,13 +175,15 @@
     <ClInclude Include="scene_temp\scene_mesh.h" />
     <ClInclude Include="scene_temp\scene_model.h" />
     <ClInclude Include="skybox.hpp" />
+    <ClInclude Include="water\Program_w.hpp" />
+    <ClInclude Include="water\Shader_w.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\glad.c" />
-    <ClCompile Include="main_ms.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="main_ms.cpp" />
+    <ClCompile Include="ocean.cpp" />
+    <ClCompile Include="water\Program_w.cpp" />
+    <ClCompile Include="water\Shader_w.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
