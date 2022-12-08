@@ -15,14 +15,14 @@
 #include <wtypes.h>
 
 
-/********************************************* 函数声明 *********************************************/
+/********************************************* �������� *********************************************/
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 void renderScene(Shader& shader, Model& Model_island, Model& Model_stage,Model& Model_castle, Model& Model_smallIsland,Model& dancer);
 void RenderQuad();
-/********************************************* 全局变量/宏定义 *********************************************/
+/********************************************* ȫ�ֱ���/�궨�� *********************************************/
 // settings
 unsigned int SCR_WIDTH = 800;
 unsigned int SCR_HEIGHT = 600;
@@ -70,7 +70,7 @@ const glm::vec3 stagePos = glm::vec3(25.0f, 1.6f, -5.0f);
 const glm::vec3 dirLightDirection = glm::vec3(2.0f, -3.0f, 0.0f);
 const glm::vec3 dirLightPos = glm::vec3(20.0f, 20.0f, -20.0f);
 
-//屏幕四边形的VA0\VBO(用到)
+//��Ļ�ı��ε�VA0\VBO(�õ�)
 GLuint quadVAO = 0;
 GLuint quadVBO;
 
@@ -176,23 +176,23 @@ int main()
 	int act = a0;
 
 	//**************SHADOW TEST************//
-	/*创建阴影贴图*/
+	/*������Ӱ��ͼ*/
 	unsigned int depthMapFBO, depthMap;
-	glGenFramebuffers(1, &depthMapFBO); //生成一个帧缓冲对象
+	glGenFramebuffers(1, &depthMapFBO); //����һ��֡�������
 	const GLuint SHADOW_WIDTH = SCR_WIDTH, SHADOW_HEIGHT = SCR_HEIGHT;
 	glGenTextures(1, &depthMap);
-	glBindTexture(GL_TEXTURE_2D, depthMap);//绑定深度图
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);//生成深度图
+	glBindTexture(GL_TEXTURE_2D, depthMap);//�����ͼ
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);//�������ͼ
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-	//把生成的深度纹理作为帧缓冲的深度缓冲
-	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);//激活深度图的帧缓冲
+	//�����ɵ����������Ϊ֡�������Ȼ���
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);//�������ͼ��֡����
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
-	//设置不用任何颜色
+	//���ò����κ���ɫ
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 	// Always check that our framebuffer is ok
@@ -219,9 +219,9 @@ int main()
 
 
 		//START TO RENDER EVERYTHING
-		/* STEP1---渲染深度贴图 */
+		/* STEP1---��Ⱦ�����ͼ */
 		//glCullFace(GL_FRONT);
-	//光源空间的变换
+	//��Դ�ռ�ı任
 		GLfloat near_plane = 0.1f, far_plane = 30.0f;
 		glm::mat4 lightProjection = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, near_plane, far_plane);
 		//glm::mat4 lightView = glm::lookAt(dirLightPos, dirLightPos + dirLightDirection, glm::vec3(0.0, 1.0, 0.0));//camera.Position
@@ -239,11 +239,11 @@ int main()
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		//glCullFace(GL_BACK);
 
-		/* STEP2---渲染depthMap到场景 可视化 */
+		/* STEP2---��ȾdepthMap������ ���ӻ� */
 	// Reset viewport
 		glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//to debug only，RenderQuad显示当前的深度图
+		//to debug only��RenderQuad��ʾ��ǰ�����ͼ
 		if (0) {
 			testShader.use();
 			GLuint shadow_loc = glGetUniformLocation(testShader.ID, "shadowMap");
@@ -255,7 +255,7 @@ int main()
 		}
 
 		/* STEP3----render the scene&model */
-		//动画切换判断
+		//�����л��ж�
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
 			animator.setCurrentTime(s1);
 			act = a1;
@@ -325,7 +325,7 @@ int main()
 
 		//scene
 		// ================================== MODEL parameter define ==================================
-		// 含贴图
+		// ����ͼ
 		GLint pointLightAmbientLoc = glGetUniformLocation(modelShader_withTexture.ID, "pointLights[0].ambient");
 		GLint pointLightDiffuseLoc = glGetUniformLocation(modelShader_withTexture.ID, "pointLights[0].diffuse");
 		GLint pointLightSpecularLoc = glGetUniformLocation(modelShader_withTexture.ID, "pointLights[0].specular");
@@ -340,7 +340,7 @@ int main()
 		GLint dirLightDirectionLoc = glGetUniformLocation(modelShader_withTexture.ID, "dirLight.direction");
 		GLint isPointLightLoc = glGetUniformLocation(modelShader_withTexture.ID, "is_pointlight");
 		GLuint shadowLoc = glGetUniformLocation(modelShader_withTexture.ID, "shadowMap");
-		// 不含贴图
+		// ������ͼ
 		GLint pointLightAmbientLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "pointLights[0].ambient");
 		GLint pointLightDiffuseLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "pointLights[0].diffuse");
 		GLint pointLightSpecularLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "pointLights[0].specular");
@@ -355,7 +355,7 @@ int main()
 		GLint dirLightDirectionLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "dirLight.direction");
 		GLint isPointLightLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "is_pointlight");
 		GLuint shadowLoc_none = glGetUniformLocation(modelShader_noneTexture.ID, "shadowMap");
-		// 设置观察者位置
+		// ���ù۲���λ��
 		GLint viewPosLoc = glGetUniformLocation(modelShader_withTexture.ID, "viewPos");
 		glUniform3f(viewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
 		projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -365,25 +365,25 @@ int main()
 
 		// -------------------------------- MODEL island --------------------------------
 		modelShader_withTexture.use();
-		// 设置光源属性 平行光源
+		// ���ù�Դ���� ƽ�й�Դ
 		glUniform3f(dirLightAmbientLoc, 0.3f, 0.3f, 0.3f);
 		glUniform3f(dirLightDiffuseLoc, 0.8f, 0.8f, 0.8f);
 		glUniform3f(dirLightSpecularLoc, 0.5f, 0.5f, 0.5f);
 		glUniform3f(dirLightDirectionLoc, dirLightDirection.x, dirLightDirection.y, dirLightDirection.z);
-		// 设置光源属性 点光源
+		// ���ù�Դ���� ���Դ
 		glm::vec3 landLightPos = glm::vec3(islandPos.x, islandPos.y + 5, islandPos.z);
-		glUniform1i(isPointLightLoc, true);//点光源
+		glUniform1i(isPointLightLoc, true);//���Դ
 		glUniform3f(pointLightAmbientLoc, 0.7f, 0.7f, 0.8f);
 		glUniform3f(pointLightDiffuseLoc, 0.5f, 0.5f, 0.5f);
 		glUniform3f(pointLightSpecularLoc, 1.0f, 1.0f, 1.0f);
 		glUniform3f(pointLightPosLoc, landLightPos.x, landLightPos.y, landLightPos.z);
-		// 设置衰减系数
+		// ����˥��ϵ��
 		glUniform1f(attConstant, 1.0f);
 		glUniform1f(attLinear, 0.09f);
 		glUniform1f(attQuadratic, 0.032f);
-		// 亮度
+		// ����
 		glUniform1f(shininess, 64.0f);
-		//光空间视角变换矩阵
+		//��ռ��ӽǱ任����
 		glUniformMatrix4fv(glGetUniformLocation(modelShader_withTexture.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 		// view/projection transformations
 		modelShader_withTexture.setMat4("projection", projection);
@@ -401,28 +401,28 @@ int main()
 		// -------------------------------- MODEL stage --------------------------------
 
 		modelShader_withTexture.use();
-		// 设置光源属性 平行光源
+		// ���ù�Դ���� ƽ�й�Դ
 		glUniform3f(dirLightAmbientLoc, 0.5f, 0.5f, 0.5f);
 		glUniform3f(dirLightDiffuseLoc, 0.8f, 0.8f, 0.8f);
 		glUniform3f(dirLightSpecularLoc, 0.5f, 0.5f, 0.5f);
 		glUniform3f(dirLightDirectionLoc, dirLightDirection.x, dirLightDirection.y, dirLightDirection.z);
-		// 设置光源属性 点光源
+		// ���ù�Դ���� ���Դ
 		glm::vec3 stageLightPos = glm::vec3(stagePos.x, stagePos.y + 5, stagePos.z);
-		glUniform1i(isPointLightLoc, true);//点光源
+		glUniform1i(isPointLightLoc, true);//���Դ
 		glUniform3f(pointLightAmbientLoc, 0.9f, 0.3f, 0.9f);
 		glUniform3f(pointLightDiffuseLoc, 0.5f, 0.5f, 0.5f);
 		glUniform3f(pointLightSpecularLoc, 1.0f, 1.0f, 1.0f);
 		glUniform3f(pointLightPosLoc, stageLightPos.x, stageLightPos.y, stageLightPos.z);
-		// 设置衰减系数
+		// ����˥��ϵ��
 		glUniform1f(attConstant, 1.0f);
 		glUniform1f(attLinear, 0.09f);
 		glUniform1f(attQuadratic, 0.32f);
-		// 亮度
+		// ����
 		glUniform1f(shininess, 64.0f);
 		// view/projection transformations
 		modelShader_withTexture.setMat4("projection", projection);
 		modelShader_withTexture.setMat4("view", view);
-		//光空间视角变换矩阵
+		//��ռ��ӽǱ任����
 		glUniformMatrix4fv(glGetUniformLocation(modelShader_withTexture.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 		// render the loaded model
 		model = glm::mat4(1.0f);
@@ -436,28 +436,28 @@ int main()
 		Model_stage.Draw(modelShader_withTexture);
 		// -------------------------------- MODEL castle --------------------------------
 		modelShader_noneTexture.use();
-		// 设置光源属性 平行光源
+		// ���ù�Դ���� ƽ�й�Դ
 		glUniform3f(dirLightAmbientLoc_none, 0.1f, 0.1f, 0.1f);
 		glUniform3f(dirLightDiffuseLoc_none, 0.8f, 0.8f, 0.8f);
 		glUniform3f(dirLightSpecularLoc_none, 0.5f, 0.5f, 0.5f);
 		glUniform3f(dirLightDirectionLoc_none, dirLightDirection.x, dirLightDirection.y, dirLightDirection.z);
-		// 设置光源属性 点光源
+		// ���ù�Դ���� ���Դ
 		glm::vec3 castleLightPos = glm::vec3(castlePos.x, castlePos.y + 6, castlePos.z);
-		glUniform1i(isPointLightLoc_none, true);//点光源
+		glUniform1i(isPointLightLoc_none, true);//���Դ
 		glUniform3f(pointLightAmbientLoc_none, 0.95f, 0.8f, 0.85f);
 		glUniform3f(pointLightDiffuseLoc_none, 0.5f, 0.5f, 0.5f);
 		glUniform3f(pointLightSpecularLoc_none, 1.0f, 1.0f, 1.0f);
 		glUniform3f(pointLightPosLoc_none, castleLightPos.x, castleLightPos.y, castleLightPos.z);
-		// 设置衰减系数
+		// ����˥��ϵ��
 		glUniform1f(attConstant_none, 1.0f);
 		glUniform1f(attLinear_none, 0.29f);
 		glUniform1f(attQuadratic_none, 0.32f);
-		// 亮度
+		// ����
 		glUniform1f(shininess_none, 64.0f);
 		// view/projection transformations
 		modelShader_noneTexture.setMat4("projection", projection);
 		modelShader_noneTexture.setMat4("view", view);
-		//光空间视角变换矩阵
+		//��ռ��ӽǱ任����
 		glUniformMatrix4fv(glGetUniformLocation(modelShader_noneTexture.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 		// render the loaded model
 		model = glm::mat4(1.0f);
@@ -473,25 +473,25 @@ int main()
 
 		// -------------------------------- MODEL smallIsland --------------------------------
 		modelShader_noneTexture.use();
-		// 设置光源属性 平行光源
+		// ���ù�Դ���� ƽ�й�Դ
 		glUniform3f(dirLightAmbientLoc_none, 0.40f, 0.40f, 0.40f);
 		glUniform3f(dirLightDiffuseLoc_none, 0.8f, 0.8f, 0.8f);
 		glUniform3f(dirLightSpecularLoc_none, 0.5f, 0.5f, 0.5f);
 		glUniform3f(dirLightDirectionLoc_none, dirLightDirection.x, dirLightDirection.y, dirLightDirection.z);
-		// 设置光源属性 点光源
+		// ���ù�Դ���� ���Դ
 		glm::vec3 SLandLightPos = glm::vec3(smallIslandPos.x, smallIslandPos.y + 2, smallIslandPos.z);
-		glUniform1i(isPointLightLoc_none, true);//点光源
+		glUniform1i(isPointLightLoc_none, true);//���Դ
 		glUniform3f(pointLightAmbientLoc_none, 1.0f, 1.0f, 1.0f);
 		glUniform3f(pointLightDiffuseLoc_none, 0.5f, 0.5f, 0.5f);
 		glUniform3f(pointLightSpecularLoc_none, 1.0f, 1.0f, 1.0f);
 		glUniform3f(pointLightPosLoc_none, SLandLightPos.x, SLandLightPos.y, SLandLightPos.z);
-		// 设置衰减系数
+		// ����˥��ϵ��
 		glUniform1f(attConstant_none, 1.0f);
 		glUniform1f(attLinear_none, 0.09f);
 		glUniform1f(attQuadratic_none, 0.032f);
-		// 亮度
+		// ����
 		glUniform1f(shininess_none, 64.0f);
-		//光空间视角变换矩阵
+		//��ռ��ӽǱ任����
 		glUniformMatrix4fv(glGetUniformLocation(modelShader_noneTexture.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 		// view/projection transformations
 		modelShader_noneTexture.setMat4("projection", projection);
@@ -521,7 +521,7 @@ int main()
 }
 
 
-// 将深度图渲染到屏幕的四边形上
+// �����ͼ��Ⱦ����Ļ���ı�����
 void RenderQuad()
 {
 	if (quadVAO == 0)
@@ -549,7 +549,7 @@ void RenderQuad()
 	glBindVertexArray(0);
 }
 
-//渲染场景的深度图时 使用
+//��Ⱦ���������ͼʱ ʹ��
 void renderScene(Shader& shader, Model& Model_island, Model& Model_stage, Model& Model_castle, Model& Model_smallIsland, Model& dancer)
 {
 	glm::mat4 model = glm::mat4(1.0f);
