@@ -29,10 +29,10 @@
       <UniqueIdentifier>{0b380d34-3f2d-4d4e-88c0-5e0904d53103}</UniqueIdentifier>
     </Filter>
     <Filter Include="头文件\water">
-      <UniqueIdentifier>{88d486b7-4c34-43a6-9dab-5d422e99ebf6}</UniqueIdentifier>
+      <UniqueIdentifier>{71df702c-7d84-48a4-a4bd-e941ee93f8d7}</UniqueIdentifier>
     </Filter>
     <Filter Include="资源文件\water">
-      <UniqueIdentifier>{3c54e1b7-ba00-481f-9477-e00b1b4ce804}</UniqueIdentifier>
+      <UniqueIdentifier>{b59ba20a-d952-4ea2-91b3-6611dc2ea2aa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -145,17 +145,17 @@
     <ClCompile Include="..\glad.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="water\Program_w.cpp">
-      <Filter>头文件\water</Filter>
-    </ClCompile>
-    <ClCompile Include="water\Shader_w.cpp">
-      <Filter>头文件\water</Filter>
-    </ClCompile>
     <ClCompile Include="main_ms.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ocean.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="water\Program_w.cpp">
+      <Filter>头文件\water</Filter>
+    </ClCompile>
+    <ClCompile Include="water\Shader_w.cpp">
+      <Filter>头文件\water</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

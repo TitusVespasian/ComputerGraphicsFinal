@@ -43,8 +43,8 @@ vec3 calcLight(Light light, vec3 material, vec3 viewDir, vec3 normal){
 	vec3 halfwayDir = normalize(fragToLightDir + viewDir);
 	float specAngle = max(dot(halfwayDir,normal),0.0);
 	float spec = pow(specAngle,SHINENESS);
-	vec3 ambient = light.ambient * material;
-	vec3 diffuse = light.diffuse * material *diff;
-	vec3 specular = light.specular * spec;
+	vec3 ambient = 8.0*light.ambient * material;
+	vec3 diffuse = 0.3*light.diffuse * material *diff;
+	vec3 specular = 0.3*light.specular * spec;
 	return ambient + diffuse + specular;
 }
