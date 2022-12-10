@@ -137,7 +137,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)libs\$(Configuration)\$(Platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>irrKlang.lib;glfw3.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -145,6 +145,8 @@
     <None Include="shaders\model\1.model_loading.vs" />
     <None Include="shaders\model\anim_model.fs" />
     <None Include="shaders\model\anim_model.vs" />
+    <None Include="shaders\model\dirShadowModel.fs" />
+    <None Include="shaders\model\dirShadowModel.vs" />
     <None Include="shaders\scene\dirShadow.fs" />
     <None Include="shaders\scene\dirShadow.vs" />
     <None Include="shaders\scene\model_loading.fs" />

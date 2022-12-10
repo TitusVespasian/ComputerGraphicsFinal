@@ -24,7 +24,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
-void renderScene(Shader& shader, Model& Model_island, Model& Model_stage, Model& Model_castle, Model& dancer);
+void renderScene(Shader& shader, Shader& modelShader, Model& Model_island, Model& Model_stage, Model& Model_castle, Model& dancer);
 void RenderQuad();
 unsigned int loadTexture_(char const* path);
 
@@ -91,7 +91,7 @@ extern void renderWater();
 extern void deleteOcean();
 
 // aanimation time last
-const float a_time[] = { 4.74,4.5,1.94,4.8,3.9 };
+const float a_time[] = { 4.74f,4.5f,1.94f,4.8f,3.9f };
 
 struct movement {
 	int id;
@@ -111,6 +111,8 @@ int main()
 
 	// build and compile shaders
 	// -------------------------
+	// "shaders/model/anim_model.vs", "shaders/model/anim_model.fs"
+	//"shaders/scene/model_loading.vs", "shaders/scene/model_loading_withTexture.fs"
 	Shader ourShader("shaders/model/anim_model.vs", "shaders/model/anim_model.fs");
 
 	// load models
@@ -140,6 +142,7 @@ int main()
 
 	//shadow 
 	Shader DepthShader("shaders/scene/dirShadow.vs", "shaders/scene/dirShadow.fs");
+	Shader modelDepthShader("shaders/model/dirShadowModel.vs", "shaders/model/dirShadowModel.fs");
 	Shader testShader("shaders/scene/shadowTest.vs", "shaders/scene/shadowTest.fs");
 
 	//animation id
@@ -249,13 +252,13 @@ int main()
 				break;
 		}
 	}
-	
+
 
 
 	// 时间管理和动作管理
 	movement cur_a;
 	float start_time = (float)glfwGetTime();
-	float mark_time = start_time + 7.5;
+	float mark_time = start_time + 7.50f;
 	float tip_time = mark_time - 1;
 	cur_a.id = 0;
 	cur_a.end_time = mark_time + 5;
@@ -275,7 +278,7 @@ int main()
 		if (lastFrame - start_time >= 85) {
 			SoundEngine->stopAllSounds();
 		}
-		else if (lastFrame - tip_time >= 5) {	
+		else if (lastFrame - tip_time >= 5) {
 			// 渲染提示
 			tip_time = currentFrame;//记录时间
 			key = -1;
@@ -293,7 +296,7 @@ int main()
 			act = -1;
 			animator.setCurrentTime(et[1]);//站立
 		}
-		
+
 		// input
 		// -----
 		processInput(window);
@@ -310,14 +313,19 @@ int main()
 		glm::vec3 delt = glm::vec3(0.0, 5.0, 0.0);
 		glm::mat4 lightView = glm::lookAt(camera.Position + delt, camera.Position + delt + dirLightDirection, glm::vec3(0.0, 1.0, 0.0));//camera.Position
 		glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+
 		DepthShader.use();
 		GLint lightSpaceMatrixLocation = glGetUniformLocation(DepthShader.ID, "lightSpaceMatrix");
+		glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+
+		modelDepthShader.use();
+		lightSpaceMatrixLocation = glGetUniformLocation(modelDepthShader.ID, "lightSpaceMatrix");
 		glUniformMatrix4fv(lightSpaceMatrixLocation, 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
 
 		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
-		renderScene(DepthShader, Model_island,Model_stage, Model_castle, ourModel);
+		renderScene(DepthShader, modelDepthShader, Model_island, Model_stage, Model_castle, ourModel);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		/* STEP2---渲染depthMap到场景 可视化 */
@@ -361,7 +369,7 @@ int main()
 			if (key < 0)
 				key = a4;
 		}
-		
+
 
 		//keep the animation
 		if (act == a0 && animator.getCurrentTime(deltaTime) >= e0) {
@@ -382,7 +390,7 @@ int main()
 				animator.setCurrentTime(s4);
 		}
 
-		
+
 
 		animator.UpdateAnimation();
 		ourShader.use();
@@ -396,9 +404,14 @@ int main()
 
 		auto transforms = animator.GetFinalBoneMatrices();
 		for (int i = 0; i < transforms.size(); ++i)
+		{
+			ourShader.use();
 			ourShader.setMat4("finalBonesMatrices[" + std::to_string(i) + "]", transforms[i]);
-
-
+			modelDepthShader.use();
+			modelDepthShader.setMat4("finalBonesMatrices[" + std::to_string(i) + "]", transforms[i]);
+		}
+		
+		ourShader.use();
 		// render the loaded model
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-25.0f, 0.0f, 25.0f));
@@ -671,20 +684,23 @@ void RenderQuad()
 }
 
 
-void renderScene(Shader& shader, Model& Model_island, Model& Model_stage, Model& Model_castle, Model& dancer)
+void renderScene(Shader& shader, Shader& modelShader, Model& Model_island, Model& Model_stage, Model& Model_castle, Model& dancer)
 {
 	glm::mat4 model = glm::mat4(1.0f);
 	// -------------------------------- MODEL dancer --------------------------------
+	model = glm::translate(model, glm::vec3(-25.0f, 0.0f, 25.0f));
 	model = glm::translate(model, glm::vec3(22.7f, 1.2f, -22.7f)); // translate it down so it's at the center of the scene
 	model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));	// it's a bit too big for our scene, so scale it down
 	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.5f)); // translate it down so it's at the center of the scene
 	model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.f));
-	shader.setMat4("model", model);
+	modelShader.use();
+	modelShader.setMat4("model", model);
 	dancer.Draw(shader);
 	// -------------------------------- MODEL island --------------------------------
 	model = glm::mat4(1.0f);
 	model = glm::translate(model, islandPos);			// site
 	model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));		// scale
+	shader.use();
 	shader.setMat4("model", model);
 	Model_island.Draw(shader);
 	// -------------------------------- MODEL stage --------------------------------
@@ -768,7 +784,7 @@ unsigned int loadTexture_(char const* path)
 	unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
 	if (data)
 	{
-		GLenum format;
+		GLenum format = GL_RGBA;
 		if (nrComponents == 1)
 			format = GL_RED;
 		else if (nrComponents == 3)
