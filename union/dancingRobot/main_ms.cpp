@@ -13,6 +13,9 @@
 
 #include <iostream>
 #include <wtypes.h>
+#include<fstream>
+
+#include <irrklang/irrKlang.h>
 
 
 /********************************************* 函数声明 *********************************************/
@@ -23,6 +26,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 void renderScene(Shader& shader, Model& Model_island, Model& Model_stage, Model& Model_castle, Model& dancer);
 void RenderQuad();
+unsigned int loadTexture_(char const* path);
 
 /********************************************* 全局变量/宏定义 *********************************************/
 
@@ -52,6 +56,7 @@ const int a4 = 4;//right
 
 //30fps
 //animation start time
+const float st[] = { 0.0f ,180.0f ,360.0f,450.0f,570.0f };
 const float s0 = 0.0f;
 const float s1 = 180.0f;
 const float s2 = 360.0f;
@@ -59,6 +64,7 @@ const float s3 = 450.0f;
 const float s4 = 570.0f;
 
 //animation end time
+const float et[] = { 141.0f,315.0f,418.0f,521.0f,685.0f };
 const float e0 = 141.0f;
 const float e1 = 315.0f;
 const float e2 = 418.0f;
@@ -83,6 +89,17 @@ extern void initProgram();
 extern void initWater();
 extern void renderWater();
 extern void deleteOcean();
+
+// aanimation time last
+const float a_time[] = { 4.74,4.5,1.94,4.8,3.9 };
+
+struct movement {
+	int id;
+	float end_time;
+};
+
+// music player
+irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
 
 int main()
 {
@@ -128,6 +145,14 @@ int main()
 	//animation id
 	int act = a0;
 
+	//beat read
+	ifstream fin;
+	fin.open("resources/sound/beat.bt");
+	if (!fin.is_open()) {
+		std::cout << "Could not open beat file" << endl;
+		return -1;
+	}
+
 	//**************SHADOW TEST************//
 	/*创建阴影贴图*/
 	unsigned int depthMapFBO, depthMap;
@@ -155,6 +180,87 @@ int main()
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+
+
+
+	if (false) {
+		Shader startShader("shaders/scene/fading.vs", "shaders/scene/fading.fs"); // you can name your shader files however you like
+
+
+		float vertices[] = {
+			 1.0f,  1.0f,  1.0f,  1.0f,
+			 1.0f, -1.0f,  1.0f,  0.0f,
+			-1.0f, -1.0f,  0.0f,  0.0f,
+			-1.0f,  1.0f,  0.0f,  1.0f
+		};
+
+		unsigned int indices[] = {
+			0, 1, 3, // first triangle
+			1, 2, 3  // second triangle
+		};
+
+		unsigned int VBO, VAO, EBO;
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
+		glGenBuffers(1, &EBO);
+
+		glBindVertexArray(VAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+
+		unsigned int Texture0 = loadTexture_("texture.png");
+
+		glBindVertexArray(0);
+
+		glEnable(GL_DEPTH_TEST);
+
+		double t_start = glfwGetTime();
+		while (!glfwWindowShouldClose(window))
+		{
+
+			processInput(window);
+
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			startShader.use();
+
+			glBindTexture(GL_TEXTURE_2D, Texture0);
+
+			startShader.setFloat("iTime", (float)glfwGetTime());
+			glBindVertexArray(VAO);
+			//glDrawArrays(GL_TRIANGLES, 0, 6);
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+
+			double t_last = glfwGetTime() - t_start;
+			if (t_last >= 10)
+				break;
+		}
+	}
+	
+
+
+	// 时间管理和动作管理
+	movement cur_a;
+	float start_time = (float)glfwGetTime();
+	float mark_time = start_time + 7.5;
+	float tip_time = mark_time - 1;
+	cur_a.id = 0;
+	cur_a.end_time = mark_time + 5;
+	int key = -1;
+	SoundEngine->play2D("resources/sound/play.mp3", GL_TRUE);
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
@@ -165,6 +271,29 @@ int main()
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
+		// music control
+		if (lastFrame - start_time >= 85) {
+			SoundEngine->stopAllSounds();
+		}
+		else if (lastFrame - tip_time >= 5) {	
+			// 渲染提示
+			tip_time = currentFrame;//记录时间
+			key = -1;
+		}
+		else if (key > 0 && lastFrame - mark_time >= 5) {	// 动作读取
+			//act = fin.get() - '0';//从文件中读取
+			act = key;	//从键盘读取
+			cur_a.id = act;
+			cur_a.end_time = lastFrame + a_time[act];//标记结束时间
+			animator.setCurrentTime(st[act]);//设置模型
+			mark_time = lastFrame;//记录时间
+		}
+
+		if (lastFrame >= cur_a.end_time) {
+			act = -1;
+			animator.setCurrentTime(et[1]);//站立
+		}
+		
 		// input
 		// -----
 		processInput(window);
@@ -209,21 +338,30 @@ int main()
 		/* STEP3----render the scene&model */
 		//动画切换判断
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-			animator.setCurrentTime(s1);
-			act = a1;
+			//animator.setCurrentTime(s1);
+			//act = a1;
+			if (key < 0)
+				key = a1;
 		}
 		else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-			animator.setCurrentTime(s2);
-			act = a2;
+			//animator.setCurrentTime(s2);
+			//act = a2;
+			if (key < 0)
+				key = a2;
 		}
 		else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-			animator.setCurrentTime(s3);
-			act = a3;
+			//animator.setCurrentTime(s3);
+			//act = a3;
+			if (key < 0)
+				key = a3;
 		}
 		else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-			animator.setCurrentTime(s4);
-			act = a4;
+			//animator.setCurrentTime(s4);
+			//act = a4;
+			if (key < 0)
+				key = a4;
 		}
+		
 
 		//keep the animation
 		if (act == a0 && animator.getCurrentTime(deltaTime) >= e0) {
@@ -243,6 +381,8 @@ int main()
 			if (t >= e4 || t < s4)
 				animator.setCurrentTime(s4);
 		}
+
+		
 
 		animator.UpdateAnimation();
 		ourShader.use();
@@ -617,4 +757,41 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	camera.ProcessMouseScroll((float)yoffset);
+}
+
+unsigned int loadTexture_(char const* path)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+
+	int width, height, nrComponents;
+	unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		stbi_image_free(data);
+	}
+	else
+	{
+		std::cout << "Texture failed to load at path: " << path << std::endl;
+		stbi_image_free(data);
+	}
+
+	return textureID;
 }
