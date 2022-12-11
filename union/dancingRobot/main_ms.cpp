@@ -26,6 +26,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 void renderScene(Shader& shader, Shader& modelShader, Model& Model_island, Model& Model_stage, Model& Model_castle, Model& dancer);
 void RenderQuad();
+void RenderStart();
 unsigned int loadTexture_(char const* path);
 
 /********************************************* 全局变量/宏定义 *********************************************/
@@ -38,7 +39,7 @@ unsigned int SCR_WIDTH = 800;
 unsigned int SCR_HEIGHT = 600;
 
 // camera
-Camera camera(glm::vec3(-5.0f, 3.0f, 8.0f));
+Camera camera(glm::vec3(-9.0f, 3.0f, 10.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -56,20 +57,20 @@ const int a4 = 4;//right
 
 //30fps
 //animation start time
-const float st[] = { 0.0f ,180.0f ,360.0f,450.0f,570.0f };
+const float st[] = { 0.0f ,180.0f ,360.0f,540.0f,690.0f };
 const float s0 = 0.0f;
 const float s1 = 180.0f;
 const float s2 = 360.0f;
-const float s3 = 450.0f;
-const float s4 = 570.0f;
+const float s3 = 540.0f;
+const float s4 = 690.0f;
 
 //animation end time
-const float et[] = { 141.0f,315.0f,418.0f,521.0f,685.0f };
+const float et[] = { 141.0f,315.0f,509.0f,665.0f,804.0f };
 const float e0 = 141.0f;
 const float e1 = 315.0f;
-const float e2 = 418.0f;
-const float e3 = 521.0f;
-const float e4 = 685.0f;
+const float e2 = 509.0f;
+const float e3 = 665.0f;
+const float e4 = 804.0f;
 
 //动作提示的宏定义
 int need_pose=0;//提示当前需要做的动作
@@ -98,15 +99,18 @@ const glm::vec3 dirLightPos = glm::vec3(-5.0f, 7.0f, 8.0f);
 //屏幕四边形的VA0\VBO(用到)
 GLuint quadVAO = 0;
 GLuint quadVBO;
-
+GLuint startVBO, startVAO, startEBO;
 // ocean
 extern void initProgram();
 extern void initWater();
 extern void renderWater();
 extern void deleteOcean();
 
+//game mode
+const int MODE = 1; //0:keyboard 1:readfile(CV)
+
 // aanimation time last
-const float a_time[] = { 4.74f,4.5f,1.94f,4.8f,3.9f };
+const float a_time[] = { 4.74,4.5,4.97,4.17,3.8 };
 
 struct movement {
 	int id;
@@ -167,16 +171,32 @@ int main()
 	Shader modelDepthShader("shaders/model/dirShadowModel.vs", "shaders/model/dirShadowModel.fs");
 	Shader testShader("shaders/scene/shadowTest.vs", "shaders/scene/shadowTest.fs");
 
+	//start
+	Shader startShader("shaders/front/start.vs", "shaders/front/start.fs");
+	Shader fadingShader("shaders/front/fading.vs", "shaders/front/fading.fs");
+
 	//animation id
 	int act = a0;
+	int tip = a0;
 
 	//beat read
 	ifstream fin;
-	fin.open("resources/sound/beat.bt");
+	fin.open("resources/sound/act.bt");
 	if (!fin.is_open()) {
 		std::cout << "Could not open beat file" << endl;
 		return -1;
 	}
+
+	ifstream fin_tip;
+	fin_tip.open("resources/sound/beat.bt");
+	if (!fin_tip.is_open()) {
+		std::cout << "Could not open beat file" << endl;
+		return -1;
+	}
+
+	// texture
+	// ------
+	unsigned int TextureS = loadTexture_("resources/start/start.png");
 
 	//**************SHADOW TEST************//
 	/*创建阴影贴图*/
@@ -205,86 +225,88 @@ int main()
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	
 
-	if (false) {
-		Shader startShader("shaders/scene/fading.vs", "shaders/scene/fading.fs"); // you can name your shader files however you like
+	/*****************入场动画渲染************************/
 
+	RenderStart();
+	glEnable(GL_DEPTH_TEST);
+	SoundEngine->play2D("resources/sound/front.mp3", GL_FALSE);
+	double t_start = glfwGetTime();
+	bool is_end = false;
+	double t_end = 0;
+	bool not_set = true;
+	while (!glfwWindowShouldClose(window))
+	{
 
-		float vertices[] = {
-			 1.0f,  1.0f,  1.0f,  1.0f,
-			 1.0f, -1.0f,  1.0f,  0.0f,
-			-1.0f, -1.0f,  0.0f,  0.0f,
-			-1.0f,  1.0f,  0.0f,  1.0f
-		};
+		processInput(window);
 
-		unsigned int indices[] = {
-			0, 1, 3, // first triangle
-			1, 2, 3  // second triangle
-		};
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		startShader.use();
 
-		unsigned int VBO, VAO, EBO;
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
-		glGenBuffers(1, &EBO);
-
-		glBindVertexArray(VAO);
-
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-		glEnableVertexAttribArray(1);
-
-		unsigned int Texture0 = loadTexture_("texture.png");
-
-		glBindVertexArray(0);
-
-		glEnable(GL_DEPTH_TEST);
-
-		double t_start = glfwGetTime();
-		while (!glfwWindowShouldClose(window))
-		{
-
-			processInput(window);
-
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			startShader.use();
-
-			glBindTexture(GL_TEXTURE_2D, Texture0);
-
-			startShader.setFloat("iTime", (float)glfwGetTime());
-			glBindVertexArray(VAO);
-			//glDrawArrays(GL_TRIANGLES, 0, 6);
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-			glfwSwapBuffers(window);
-			glfwPollEvents();
-
-			double t_last = glfwGetTime() - t_start;
-			if (t_last >= 10)
-				break;
+		double t_last = glfwGetTime() - t_start;
+		if (not_set && is_end) {
+			t_end = t_last;
+			not_set = false;
 		}
+		startShader.setFloat("Time", (float)t_last);
+		startShader.setFloat("ETime", (float)(t_last - t_end));
+		startShader.setBool("End", is_end);
+		glBindVertexArray(startVAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		if (!is_end && t_last >= 13) {
+			is_end = true;
+		}
+		if (t_last >= 19)
+			break;
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+
+	t_start = glfwGetTime();
+	while (!glfwWindowShouldClose(window))
+	{
+
+		processInput(window);
+
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fadingShader.use();
+
+
+		double t_last = glfwGetTime() - t_start;
+
+		if (t_last > 6)
+			break;
+		glBindTexture(GL_TEXTURE_2D, TextureS);
+
+		fadingShader.setFloat("Time", (float)t_last+6.0f);
+		glBindVertexArray(startVAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+
 	}
 
 
 
 	// 时间管理和动作管理
-	movement cur_a;
+	movement cur_dancer, cur_tip;
 	float start_time = (float)glfwGetTime();
 	float mark_time = start_time + 7.50f;
 	float tip_time = mark_time - 1;
 
-	cur_a.id = 0;
-	cur_a.end_time = mark_time + 5;
+	cur_dancer.id = 0;
+	cur_dancer.end_time = mark_time + 5;
+
+	cur_tip.id = 0;
+	cur_tip.end_time = tip_time + 1;
 	int key = -1;
-	SoundEngine->play2D("resources/sound/play.mp3", GL_TRUE);
+	SoundEngine->play2D("resources/sound/play.mp3", GL_FALSE);
+	bool end = false;
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
@@ -297,26 +319,46 @@ int main()
 
 
 		// music control
-		if (lastFrame - start_time >= 85) {
-			SoundEngine->stopAllSounds();
+		if (end)
+			;
+		else if (lastFrame - start_time >= 85) {
+			end = true;
+			SoundEngine->play2D("resources/sound/applause.mp3", GL_FALSE);
 		}
-		else if ( lastFrame - mark_time >= 5) {	// 动作读取
-			act = fin.get() - '0';//从文件中读取
-
-			//act = key;	//从键盘读取
-			cur_a.id = act;
-			cur_a.end_time = lastFrame + a_time[act];//标记结束时间
-			animator.setCurrentTime(st[act]);//设置模型
-			mark_time = lastFrame;//记录时间
+		else if (lastFrame - start_time >= 82.5) {
+			act = -1;
+			animator.setCurrentTime(et[1]);//站立
 		}
+		else {
+			if (lastFrame - mark_time >= 5) {	// 动作读取
+				if (MODE == 1) {
+					act = fin.get() - '0';//从文件中读取
+					cur_dancer.id = act;
+					cur_dancer.end_time = lastFrame + a_time[act];//标记结束时间
+					animator.setCurrentTime(st[act]);//设置模型
+					mark_time = lastFrame;//记录时间
+				}
+				else if (key!=-1 && MODE == 0) {
+					act = key;	//从键盘读取
+					cur_dancer.id = act;
+					cur_dancer.end_time = lastFrame + a_time[act];//标记结束时间
+					animator.setCurrentTime(st[act]);//设置模型
+					mark_time = lastFrame;//记录时间
+				}
+					
+			}
 
-		if (lastFrame - tip_time >= 5) {
-			// 渲染提示
-			tip_time = currentFrame;//记录时间
-			key = -1;
+			if (lastFrame - tip_time >= 5) {
+				tip = fin_tip.get() - '0';
+				cur_tip.id = tip;
+				cur_tip.end_time = lastFrame + 1;
+				tip_time = lastFrame;//记录时间
+				key = -1;
+			}
 		}
+		
 
-		if (lastFrame >= cur_a.end_time) {
+		if (lastFrame >= cur_dancer.end_time) {
 			act = -1;
 			animator.setCurrentTime(et[1]);//站立
 		}
@@ -369,34 +411,36 @@ int main()
 
 		/* STEP3----render the scene&model */
 		//动画切换判断
-		//if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		//	//animator.setCurrentTime(s1);
-		//	//act = a1;
-		//	if (key < 0)
-		//		key = a1;
-		//	
-		//}
-		//else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-		//	//animator.setCurrentTime(s2);
-		//	//act = a2;
-		//	if (key < 0)
-		//		key = a2;
-		//	
-		//}
-		//else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-		//	//animator.setCurrentTime(s3);
-		//	//act = a3;
-		//	if (key < 0)
-		//		key = a3;
-		//	
-		//}
-		//else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-		//	//animator.setCurrentTime(s4);
-		//	//act = a4;
-		//	if (key < 0)
-		//		key = a4;
-		//	
-		//}
+		if (MODE == 0) {
+			if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+			//animator.setCurrentTime(s1);
+			//act = a1;
+			if (key < 0)
+				key = a1;
+			
+		}
+		else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+			//animator.setCurrentTime(s2);
+			//act = a2;
+			if (key < 0)
+				key = a2;
+			
+		}
+		else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+			//animator.setCurrentTime(s3);
+			//act = a3;
+			if (key < 0)
+				key = a3;
+			
+		}
+		else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+			//animator.setCurrentTime(s4);
+			//act = a4;
+			if (key < 0)
+				key = a4;
+			}
+		}
+		
 
 
 		//keep the animation
@@ -753,19 +797,23 @@ int main()
 		glActiveTexture(GL_TEXTURE9);
 		glBindTexture(GL_TEXTURE_2D, depthMap);
 
-		if (currentFrame >= tip_time && currentFrame <= mark_time)
+		if (currentFrame <= cur_tip.end_time)
 		{
-			if (act == up_pose)
+			if (cur_tip.id == up_pose)
 				Model_arrow_up.Draw(modelShader_noneTexture);
-			else if (act == down_pose)
+			else if (cur_tip.id == down_pose)
 				Model_arrow_down.Draw(modelShader_noneTexture);
-			else if (act == left_pose)
+			else if (cur_tip.id == left_pose)
 				Model_arrow_left.Draw(modelShader_noneTexture);
-			else if (act == right_pose)
+			else if (cur_tip.id == right_pose)
 				Model_arrow_right.Draw(modelShader_noneTexture);
 		}
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
+		//static bool flag = false;
+		//if(!flag)
+		//	save_img(window);
+		//flag = true;
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -867,6 +915,40 @@ void RenderQuad()
 	glBindVertexArray(0);
 }
 
+void RenderStart()
+{
+	float startVertices[] = {
+		 1.0f,  1.0f,  1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,  0.0f,
+		-1.0f, -1.0f,  0.0f,  0.0f,
+		-1.0f,  1.0f,  0.0f,  1.0f
+	};
+
+	unsigned int startIndices[] = {
+		0, 1, 3,
+		1, 2, 3
+	};
+
+	glGenVertexArrays(1, &startVAO);
+	glGenBuffers(1, &startVBO);
+	glGenBuffers(1, &startEBO);
+
+	glBindVertexArray(startVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, startVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(startVertices), startVertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, startEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(startIndices), startIndices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glBindVertexArray(0);
+}
 
 void renderScene(Shader& shader, Shader& modelShader, Model& Model_island, Model& Model_stage, Model& Model_castle, Model& dancer)
 {

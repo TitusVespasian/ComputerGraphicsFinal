@@ -21,7 +21,7 @@ uniform sampler2D water;
 uniform float depth;
 uniform Light light;
 uniform float interpolateFactor;
-uniform float wavesOffset;
+uniform float wavesOffset;  
 uniform vec3 viewPos;
 
 vec3 calcLight(Light light,vec3 material,vec3 viewDir,vec3 normal);
