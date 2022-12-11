@@ -48,6 +48,8 @@ uniform float shininess;
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir,float shadow);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir,float shadow);
 float ShadowCalculation(vec4 fragPosLightSpace, float bias);
+float Calculate_Avg_Dblockreceiver(vec2 projCoords_xy , int AvgTextureSize);
+float PCSS(vec4 fragPosLightSpace,float bias);
  
 void main()
 {    
@@ -57,7 +59,7 @@ void main()
 
     // Phase 1: Directional lighting
     float bias = max(0.003 * (1.0 - dot(norm, normalize(-dirLight.direction))), 0.001);
-    float shadow = ShadowCalculation(FragPosLightSpace,bias); 
+    float shadow = PCSS(FragPosLightSpace,bias); 
 
     vec3 result = CalcDirLight(dirLight, norm, viewDir,shadow);
     // Phase 2: Point lights
@@ -66,37 +68,66 @@ void main()
     FragColor = vec4(result ,1.0);
 }
 
-float ShadowCalculation(vec4 fragPosLightSpace, float bias)
+float Calculate_Avg_Dblockreceiver(vec2 projCoords_xy , int AvgTextureSize)
 {
+    vec2 texelSize =1.0/ textureSize(shadowMap, 0);
+    float result=0.0f;
+    for(int i=-AvgTextureSize;i<=AvgTextureSize;++i)
+    {
+        for(int j=-AvgTextureSize;j<=AvgTextureSize;j++)
+        {
+            result += texture(shadowMap, projCoords_xy+vec2(i,j)*texelSize).r; 
+        }
+    }
+    return result/(AvgTextureSize*AvgTextureSize*2*2);
+}
+
+//PCSS
+float PCSS(vec4 fragPosLightSpace,float bias)
+{
+    float lightRadius=10.0;
+    float shadow=0;
+    vec3 lightDir =normalize(dirLight.direction);
+    vec2 texelSize =1.0/ textureSize(shadowMap, 0);
     // 执行透视除法
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
-    // 变换到[0,1]的范围
-    projCoords = projCoords * 0.5 + 0.5;
+    // 转换到 [0,1]
+    projCoords = projCoords *0.5+0.5;
     if(projCoords.z > 1.0)
         return 0.0;
-    // 取得最近点的深度(使用[0,1]范围下的fragPosLight当坐标)
+    // 采样ShadowMap中的深度
     float closestDepth = texture(shadowMap, projCoords.xy).r; 
-    // 取得当前片元在光源视角下的深度
+    // 获取当前着色点的深度
     float currentDepth = projCoords.z;
-    // 检查当前片元是否在阴影中
-   //float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
-
-    //进行光滑
-    float shadow = 0.0;
-    //这个textureSize返回一个给定采样器纹理的0级mipmap的vec2类型的宽和高。用1除以它返回一个单独纹理像素的大小，
-       //我们用以对纹理坐标进行偏移，确保每个新样本，来自不同的深度值。
-    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
-    for(int x = -1; x <= 1; ++x)
+  
+    //计算着色点与平均遮挡物的距离 dr
+    float D_light_block =Calculate_Avg_Dblockreceiver(projCoords.xy,7);
+    float D_block_receiver= (currentDepth- D_light_block );
+    // 检查当前点是否在阴影中
+    if( D_light_block<0.01f)
+        return 0.0f;
+    //利用平均遮挡物距离dr计算PCF用到的采样范围 Wsample
+    float fliterArea=D_block_receiver/(D_light_block*fragPosLightSpace.w) *lightRadius;
+    int fliterSingleX=int(fliterArea);
+    int count=0;
+    fliterSingleX = fliterSingleX >10?10: fliterSingleX;
+    fliterSingleX = fliterSingleX <1?2: fliterSingleX;
+    //计算PCF
+    for(int i=-fliterSingleX;i<=fliterSingleX;++i)
     {
-    	for(int y = -1; y <= 1; ++y)
-    	{
-           float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
-           shadow += currentDepth- bias  > pcfDepth ? 1.0 : 0.0;        //
-    	}    
+        count++;
+        for(int j=-fliterSingleX;j<=fliterSingleX;j++)
+        {
+            //  采样周围点在ShadowMap中的深度
+            float closestDepth = texture(shadowMap, projCoords.xy+vec2(i,j)*texelSize).r; 
+            shadow += currentDepth-bias > closestDepth  ?1.0:0.0;
+        }
     }
-    shadow /= 9.0;
-
-    return shadow;
+    count = count >0? count :1;
+    shadow = shadow/float(count*count);
+    
+    
+    return shadow ;
 }
 // Calculates the color when using a directional light.
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir,float shadow)

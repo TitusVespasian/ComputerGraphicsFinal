@@ -132,8 +132,8 @@ int main()
 
 	// load models
 	// -----------
-	Model ourModel("resources/objects/dance/2.fbx");
-	Animation danceAnimation("resources/objects/dance/2.fbx", &ourModel);
+	Model ourModel("resources/objects/dance/3.fbx");
+	Animation danceAnimation("resources/objects/dance/3.fbx", &ourModel);
 	Animator animator(&danceAnimation);//start of the animator
 
 	//scene
@@ -182,7 +182,7 @@ int main()
 	/*创建阴影贴图*/
 	unsigned int depthMapFBO, depthMap;
 	glGenFramebuffers(1, &depthMapFBO); //生成一个帧缓冲对象
-	const GLuint SHADOW_WIDTH = SCR_WIDTH, SHADOW_HEIGHT = SCR_HEIGHT;
+	const GLuint SHADOW_WIDTH = SCR_WIDTH*2, SHADOW_HEIGHT = SCR_HEIGHT*2;
 	glGenTextures(1, &depthMap);
 	glBindTexture(GL_TEXTURE_2D, depthMap);//绑定深度图
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);//生成深度图
@@ -300,7 +300,7 @@ int main()
 		if (lastFrame - start_time >= 85) {
 			SoundEngine->stopAllSounds();
 		}
-		else if (key > 0 && lastFrame - mark_time >= 5) {	// 动作读取
+		else if ( lastFrame - mark_time >= 5) {	// 动作读取
 			act = fin.get() - '0';//从文件中读取
 
 			//act = key;	//从键盘读取
@@ -369,34 +369,34 @@ int main()
 
 		/* STEP3----render the scene&model */
 		//动画切换判断
-		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-			//animator.setCurrentTime(s1);
-			//act = a1;
-			if (key < 0)
-				key = a1;
-			
-		}
-		else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-			//animator.setCurrentTime(s2);
-			//act = a2;
-			if (key < 0)
-				key = a2;
-			
-		}
-		else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-			//animator.setCurrentTime(s3);
-			//act = a3;
-			if (key < 0)
-				key = a3;
-			
-		}
-		else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-			//animator.setCurrentTime(s4);
-			//act = a4;
-			if (key < 0)
-				key = a4;
-			
-		}
+		//if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+		//	//animator.setCurrentTime(s1);
+		//	//act = a1;
+		//	if (key < 0)
+		//		key = a1;
+		//	
+		//}
+		//else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+		//	//animator.setCurrentTime(s2);
+		//	//act = a2;
+		//	if (key < 0)
+		//		key = a2;
+		//	
+		//}
+		//else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		//	//animator.setCurrentTime(s3);
+		//	//act = a3;
+		//	if (key < 0)
+		//		key = a3;
+		//	
+		//}
+		//else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+		//	//animator.setCurrentTime(s4);
+		//	//act = a4;
+		//	if (key < 0)
+		//		key = a4;
+		//	
+		//}
 
 
 		//keep the animation
@@ -753,18 +753,16 @@ int main()
 		glActiveTexture(GL_TEXTURE9);
 		glBindTexture(GL_TEXTURE_2D, depthMap);
 
-		if (currentFrame >= start_pose_time && currentFrame <= end_pose_time)
+		if (currentFrame >= tip_time && currentFrame <= mark_time)
 		{
-			if (need_pose == up_pose)
+			if (act == up_pose)
 				Model_arrow_up.Draw(modelShader_noneTexture);
-			else if (need_pose == down_pose)
+			else if (act == down_pose)
 				Model_arrow_down.Draw(modelShader_noneTexture);
-			else if (need_pose == left_pose)
+			else if (act == left_pose)
 				Model_arrow_left.Draw(modelShader_noneTexture);
-			else if (need_pose == right_pose)
+			else if (act == right_pose)
 				Model_arrow_right.Draw(modelShader_noneTexture);
-			else
-				Model_arrow_up.Draw(modelShader_noneTexture);
 		}
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
