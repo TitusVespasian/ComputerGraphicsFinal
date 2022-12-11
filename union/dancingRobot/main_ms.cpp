@@ -77,8 +77,9 @@ const int up_pose = 1;
 const int down_pose = 2;
 const int left_pose = 3;
 const int right_pose = 4;
-
-
+const float delta_pose_time = 5.0f;//每个动作提示相差的秒数
+float start_pose_time = 12.0f;//下一个动作的开始时间;
+float end_pose_time = 13.0f;//下一个动作的开始时间;
 
 
 //model position
@@ -279,6 +280,7 @@ int main()
 	float start_time = (float)glfwGetTime();
 	float mark_time = start_time + 7.50f;
 	float tip_time = mark_time - 1;
+
 	cur_a.id = 0;
 	cur_a.end_time = mark_time + 5;
 	int key = -1;
@@ -293,22 +295,25 @@ int main()
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
+
 		// music control
 		if (lastFrame - start_time >= 85) {
 			SoundEngine->stopAllSounds();
 		}
-		else if (lastFrame - tip_time >= 5) {
-			// 渲染提示
-			tip_time = currentFrame;//记录时间
-			key = -1;
-		}
 		else if (key > 0 && lastFrame - mark_time >= 5) {	// 动作读取
-			//act = fin.get() - '0';//从文件中读取
-			act = key;	//从键盘读取
+			act = fin.get() - '0';//从文件中读取
+
+			//act = key;	//从键盘读取
 			cur_a.id = act;
 			cur_a.end_time = lastFrame + a_time[act];//标记结束时间
 			animator.setCurrentTime(st[act]);//设置模型
 			mark_time = lastFrame;//记录时间
+		}
+
+		if (lastFrame - tip_time >= 5) {
+			// 渲染提示
+			tip_time = currentFrame;//记录时间
+			key = -1;
 		}
 
 		if (lastFrame >= cur_a.end_time) {
@@ -369,24 +374,28 @@ int main()
 			//act = a1;
 			if (key < 0)
 				key = a1;
+			
 		}
 		else if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
 			//animator.setCurrentTime(s2);
 			//act = a2;
 			if (key < 0)
 				key = a2;
+			
 		}
 		else if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 			//animator.setCurrentTime(s3);
 			//act = a3;
 			if (key < 0)
 				key = a3;
+			
 		}
 		else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 			//animator.setCurrentTime(s4);
 			//act = a4;
 			if (key < 0)
 				key = a4;
+			
 		}
 
 
@@ -442,7 +451,7 @@ int main()
 		model = glm::translate(model, glm::vec3(-25.0f, 0.0f, 25.0f));
 		model = glm::translate(model, glm::vec3(22.7f, 1.2f, -22.7f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));	// it's a bit too big for our scene, so scale it down
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.5f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(-300.0f, -10.0f, 400.5f)); // translate it down so it's at the center of the scene
 		model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.f));
 		ourShader.setMat4("model", model);
 		ourModel.Draw(ourShader);
@@ -743,14 +752,20 @@ int main()
 		glUniform1i(shadowLoc, 9);
 		glActiveTexture(GL_TEXTURE9);
 		glBindTexture(GL_TEXTURE_2D, depthMap);
-		if(key==a1)
-			Model_arrow_up.Draw(modelShader_noneTexture);
-		else if(key==a2)
-			Model_arrow_down.Draw(modelShader_noneTexture);
-		else if(key==a3)
-			Model_arrow_left.Draw(modelShader_noneTexture);
-		else if(key==a4)
-			Model_arrow_right.Draw(modelShader_noneTexture);
+
+		if (currentFrame >= start_pose_time && currentFrame <= end_pose_time)
+		{
+			if (need_pose == up_pose)
+				Model_arrow_up.Draw(modelShader_noneTexture);
+			else if (need_pose == down_pose)
+				Model_arrow_down.Draw(modelShader_noneTexture);
+			else if (need_pose == left_pose)
+				Model_arrow_left.Draw(modelShader_noneTexture);
+			else if (need_pose == right_pose)
+				Model_arrow_right.Draw(modelShader_noneTexture);
+			else
+				Model_arrow_up.Draw(modelShader_noneTexture);
+		}
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
 		glfwSwapBuffers(window);
@@ -862,7 +877,7 @@ void renderScene(Shader& shader, Shader& modelShader, Model& Model_island, Model
 	model = glm::translate(model, glm::vec3(-25.0f, 0.0f, 25.0f));
 	model = glm::translate(model, glm::vec3(22.7f, 1.2f, -22.7f)); // translate it down so it's at the center of the scene
 	model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f));	// it's a bit too big for our scene, so scale it down
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -0.5f)); // translate it down so it's at the center of the scene
+	model = glm::translate(model, glm::vec3(-300.0f, -10.0f, 400.5f)); // translate it down so it's at the center of the scene
 	model = glm::rotate(model, glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.f));
 	modelShader.use();
 	modelShader.setMat4("model", model);
