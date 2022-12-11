@@ -4,6 +4,7 @@ out vec4 FragColor;
 in vec2 TexCoords;
 in vec3 normal;
 in vec3 position;
+in vec3 tp;
 
 struct DirLight{
     vec3 direction;
@@ -19,27 +20,24 @@ uniform sampler2D texture_diffuse1;
 uniform vec3 eyePos;
 
 void main()
-{    
-    vec3 LightPos = vec3(20.0f, 20.0f, -20.0f);
+{   
     vec3 N=normalize(normal);
     vec3 L=normalize(-dirLight.direction);
     float NdotL=max(dot(N,L),0);
-    vec3 V=normalize(eyePos-position);
+    vec3 V=normalize((eyePos-position));
     float NdotV=max(dot(N,V),0);
 
-    vec3 viewDir = normalize(eyePos - position);
     // Diffuse shading
     float diff =NdotL;
     // Specular shading
-    vec3 halfwayDir = normalize(-dirLight.direction + viewDir);  
-    float spec = pow(max(dot(normal, halfwayDir), 0.0), 0.2);
+    vec3 halfwayDir = normalize(-dirLight.direction + V);  
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), 1);
     // Combine results
     vec3 ambient = dirLight.ambient * vec3(texture(texture_diffuse1, TexCoords));
     vec3 diffuse = dirLight.diffuse * diff *vec3(texture(texture_diffuse1, TexCoords));
     vec3 specular = dirLight.specular * spec *vec3(texture(texture_diffuse1, TexCoords));
-
-    //NPR
-    vec3 color=ambient+diffuse;
+    
+   vec3 color=ambient+diffuse;
     if(NdotL<0.01)
         color=vec3(0.4,0.4,0.6)*color;
     else if(NdotL<0.1)
@@ -55,10 +53,10 @@ void main()
     else
         color=vec3(1,1,1);
     //ÂÖÀªÏß ¿É¿¼ÂÇÉ¾È¥
-    if(NdotV<0.0001)
+    if(NdotV<0.2)
         color=vec3(0.1,0.05,0.05);
-   //else   //²âÊÔÂÖÀªÏß
-   //    color=vec3(1,1,1);
+  // else   //²âÊÔÂÖÀªÏß
+      // color=vec3(1,1,1);
 
     FragColor = vec4(color,1.0);
 
