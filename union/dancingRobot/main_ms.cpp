@@ -78,7 +78,7 @@ const glm::vec3 smallIslandPos = glm::vec3(-25.0f, 1.0f, -15.0f);
 const glm::vec3 stagePos = glm::vec3(25.0f, 1.6f, -5.0f);
 
 const glm::vec3 dirLightDirection = glm::vec3(2.0f, -3.0f, 0.0f);
-const glm::vec3 dirLightPos = glm::vec3(20.0f, 20.0f, -20.0f);
+const glm::vec3 dirLightPos = glm::vec3(-5.0f, 7.0f, 8.0f);
 
 //屏幕四边形的VA0\VBO(用到)
 GLuint quadVAO = 0;
@@ -309,9 +309,9 @@ int main()
 		//光源空间的变换
 		GLfloat near_plane = 0.1f, far_plane = 30.0f;
 		glm::mat4 lightProjection = glm::ortho(-15.0f, 15.0f, -15.0f, 15.0f, near_plane, far_plane);
-		//glm::mat4 lightView = glm::lookAt(dirLightPos, dirLightPos + dirLightDirection, glm::vec3(0.0, 1.0, 0.0));//camera.Position
-		glm::vec3 delt = glm::vec3(0.0, 5.0, 0.0);
-		glm::mat4 lightView = glm::lookAt(camera.Position + delt, camera.Position + delt + dirLightDirection, glm::vec3(0.0, 1.0, 0.0));//camera.Position
+		glm::mat4 lightView = glm::lookAt(dirLightPos, dirLightPos + dirLightDirection, glm::vec3(0.0, 1.0, 0.0));//camera.Position
+		//glm::vec3 delt = glm::vec3(0.0, 5.0, 0.0);
+		//glm::mat4 lightView = glm::lookAt(camera.Position + delt, camera.Position + delt + dirLightDirection, glm::vec3(0.0, 1.0, 0.0));//camera.Position
 		glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
 		DepthShader.use();
@@ -412,7 +412,13 @@ int main()
 		}
 		
 		ourShader.use();
-		// render the loaded model
+		//人物的shader参数设置
+		ourShader.setVec3("dirLight.direction", dirLightDirection);
+		ourShader.setVec3("dirLight.ambient", 0.8f, 0.8f, 0.8f);
+		ourShader.setVec3("dirLight.diffuse", 0.8f, 0.8f, 0.8f);
+		ourShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+		ourShader.setVec3("eyePos", camera.Position);
+
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-25.0f, 0.0f, 25.0f));
 		model = glm::translate(model, glm::vec3(22.7f, 1.2f, -22.7f)); // translate it down so it's at the center of the scene
@@ -546,7 +552,7 @@ int main()
 		// -------------------------------- MODEL castle --------------------------------
 		modelShader_noneTexture.use();
 		// 设置光源属性 平行光源
-		glUniform3f(dirLightAmbientLoc_none, 0.1f, 0.1f, 0.1f);
+		glUniform3f(dirLightAmbientLoc_none, 0.3f, 0.3f, 0.3f);
 		glUniform3f(dirLightDiffuseLoc_none, 0.8f, 0.8f, 0.8f);
 		glUniform3f(dirLightSpecularLoc_none, 0.5f, 0.5f, 0.5f);
 		glUniform3f(dirLightDirectionLoc_none, dirLightDirection.x, dirLightDirection.y, dirLightDirection.z);

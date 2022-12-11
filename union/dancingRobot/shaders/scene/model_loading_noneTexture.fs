@@ -57,7 +57,8 @@ void main()
 
     // Phase 1: Directional lighting
    // float bias = max(0.0013 * (1.0 - dot(norm, normalize(-dirLight.direction))), 0.001);
-   float bias = max(0.03 * (1.0 - dot(norm, normalize(-dirLight.direction))), 0.001);
+   //float bias = max(0.03 * (1.0 - dot(norm, normalize(-dirLight.direction))), 0.001);
+    float bias = max(0.005 * (1.0 - dot(norm, normalize(-dirLight.direction))), 0.001);
     float shadow = ShadowCalculation(FragPosLightSpace,bias); 
 
     vec3 result = CalcDirLight(dirLight, norm, viewDir,shadow);

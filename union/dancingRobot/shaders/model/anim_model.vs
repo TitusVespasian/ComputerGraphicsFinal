@@ -17,6 +17,8 @@ const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 finalBonesMatrices[MAX_BONES];
 
 out vec2 TexCoords;
+out vec3 normal;
+out vec3 position;
 
 void main()
 {
@@ -38,4 +40,6 @@ void main()
     mat4 viewModel = view * model;
     gl_Position =  projection * viewModel * totalPosition;
 	TexCoords = tex;
+    normal=mat3(transpose(inverse(model))) * norm;
+    position=vec3( model * vec4(pos, 1.0));
 }

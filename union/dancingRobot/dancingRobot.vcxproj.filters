@@ -90,6 +90,8 @@
     <None Include="shaders\water\water-vert.vs">
       <Filter>资源文件\water</Filter>
     </None>
+    <None Include="shaders\model\dirShadowModel.fs" />
+    <None Include="shaders\model\dirShadowModel.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation\animation.h">
