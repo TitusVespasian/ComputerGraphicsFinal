@@ -1,0 +1,129 @@
+# Blender 3.3.1 MTL File: 'None'
+# www.blender.org
+
+newmtl Balloon1_Mat
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Balloon1_Mat_baseColor.png
+map_Bump  textures/Balloon3_Mat_normal.png
+
+newmtl BalloonRR
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/BalloonRR_baseColor.png
+
+newmtl BottleRR
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/BottleRR_baseColor.png
+
+newmtl Cabin_Mat
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Cabin_Mat_baseColor.png
+map_Bump  textures/Cabin_Mat_normal.png
+
+newmtl Details_Mat
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ni 1.500000
+illum 2
+map_Kd textures/Details_Mat_baseColor.png
+map_d textures/Details_Mat_baseColor.png
+map_Ke textures/Details_Mat_emissive.png
+map_Bump  textures/Details_Mat_normal.png
+
+newmtl Ellie_Mat
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd textures/Ellie_Mat_baseColor.png
+map_d textures/Ellie_Mat_baseColor.png
+map_Bump  textures/Ellie_Mat_normal.png
+
+newmtl Fabric_Mat
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Fabric_Mat_baseColor.png
+map_Bump  textures/Fabric_Mat_normal.png
+
+newmtl MechRR
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/MechRR_baseColor.png
+
+newmtl Octopus_Mat
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Octopus_Mat_baseColor.png
+map_Bump  textures/Octopus_Mat_normal.png
+
+newmtl Ropes_Mat
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/Ropes_Mat_baseColor.png
+map_Bump  textures/Ropes_Mat_normal.png
+
+newmtl SalonRR
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/SalonRR_baseColor.png
+
+newmtl WingsRR
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd textures/WingsRR_baseColor.png
