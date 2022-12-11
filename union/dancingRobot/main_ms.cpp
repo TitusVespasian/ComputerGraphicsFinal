@@ -71,6 +71,16 @@ const float e2 = 418.0f;
 const float e3 = 521.0f;
 const float e4 = 685.0f;
 
+//动作提示的宏定义
+int need_pose=0;//提示当前需要做的动作
+const int up_pose = 1;
+const int down_pose = 2;
+const int left_pose = 3;
+const int right_pose = 4;
+
+
+
+
 //model position
 const glm::vec3 castlePos = glm::vec3(0.0f, -4.3f, -0.0f);
 const glm::vec3 islandPos = glm::vec3(15.0f, 0.0f, 15.0f);
@@ -78,8 +88,8 @@ const glm::vec3 smallIslandPos = glm::vec3(-25.0f, 1.0f, -15.0f);
 const glm::vec3 stagePos = glm::vec3(25.0f, 1.6f, -5.0f);
 const glm::vec3 ballonPos = glm::vec3(3.0f, 2.5f, 3.0f);
 const glm::vec3 paperPos = glm::vec3(3.0f, 2.5f, 3.0f);
-const glm::vec3 circlePos = glm::vec3(8.0f, 0.11f, -7.0f);
-
+const glm::vec3 circlePos = glm::vec3(7.2f, 0.11f, -6.0f);
+const glm::vec3 arrowPos = glm::vec3(3.0f, 4.5f, 3.0f);
 
 const glm::vec3 dirLightDirection = glm::vec3(2.0f, -3.0f, 0.0f);
 const glm::vec3 dirLightPos = glm::vec3(-5.0f, 7.0f, 8.0f);
@@ -130,9 +140,13 @@ int main()
 	Model Model_castle("resources/sceneMaterial/cartoonCastle/Cartoon castle.obj", true);
 	Model Model_stage("resources/sceneMaterial/Stage/stage.obj", true);
 	Model Model_island("resources/sceneMaterial/Small Tropical Island/Small Tropical Island.obj", true);
-	Model Model_ballon("resources/sceneMaterial/ballon_up.obj", true);
+	Model Model_ballon("resources/sceneMaterial/Ballon/ballon.obj", true);
 	Model Model_paper("resources/sceneMaterial/Paper/paper.obj", true);
 	Model Model_circle("resources/sceneMaterial/Circle/circle.obj", true);
+	Model Model_arrow_up("resources/sceneMaterial/Arrow/arrow_up.obj", true);
+	Model Model_arrow_down("resources/sceneMaterial/Arrow/arrow_down.obj", true);
+	Model Model_arrow_right("resources/sceneMaterial/Arrow/arrow_right.obj", true);
+	Model Model_arrow_left("resources/sceneMaterial/Arrow/arrow_left.obj", true);
 	//load skybox
 	//-----------
 	skybox skyBoxI;
@@ -189,8 +203,6 @@ int main()
 		return false;
 	}
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
 
 
 	if (false) {
@@ -586,9 +598,9 @@ int main()
 		model = glm::translate(model, ballonPos);			// site
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));		// scale
 		modelShader_withTexture.setMat4("model", model);
-		glUniform1i(shadowLoc, 9);
-		glActiveTexture(GL_TEXTURE9);
-		glBindTexture(GL_TEXTURE_2D, depthMap);
+		//glUniform1i(shadowLoc, 9);
+		//glActiveTexture(GL_TEXTURE9);
+		//glBindTexture(GL_TEXTURE_2D, depthMap);
 		Model_ballon.Draw(modelShader_withTexture);
 		// -------------------------------- MODEL paper --------------------------------
 		modelShader_withTexture.use();
@@ -696,6 +708,49 @@ int main()
 		glActiveTexture(GL_TEXTURE9);
 		glBindTexture(GL_TEXTURE_2D, depthMap);
 		Model_circle.Draw(modelShader_noneTexture);
+		// -------------------------------- MODEL arrow --------------------------------
+		modelShader_noneTexture.use();
+		// 设置光源属性 平行光源
+		glUniform3f(dirLightAmbientLoc, 1.0f, 1.0f, 1.0f);
+		glUniform3f(dirLightDiffuseLoc, 0.8f, 0.8f, 0.8f);
+		glUniform3f(dirLightSpecularLoc, 0.5f, 0.5f, 0.5f);
+		glUniform3f(dirLightDirectionLoc, dirLightDirection.x, dirLightDirection.y, dirLightDirection.z);
+		// 设置光源属性 点光源
+		glm::vec3 arrowLightPos = glm::vec3(arrowPos.x, arrowPos.y + 5, arrowPos.z);
+		glUniform1i(isPointLightLoc, true);//点光源
+		glUniform3f(pointLightAmbientLoc, 0.9f, 0.3f, 0.9f);
+		glUniform3f(pointLightDiffuseLoc, 0.5f, 0.5f, 0.5f);
+		glUniform3f(pointLightSpecularLoc, 1.0f, 1.0f, 1.0f);
+		glUniform3f(pointLightPosLoc, arrowLightPos.x, arrowLightPos.y, arrowLightPos.z);
+		// 设置衰减系数
+		glUniform1f(attConstant, 1.0f);
+		glUniform1f(attLinear, 0.09f);
+		glUniform1f(attQuadratic, 0.32f);
+		// 亮度
+		glUniform1f(shininess, 64.0f);
+		// view/projection transformations
+		modelShader_noneTexture.setMat4("projection", projection);
+		modelShader_noneTexture.setMat4("view", view);
+		//光空间视角变换矩阵
+		glUniformMatrix4fv(glGetUniformLocation(modelShader_noneTexture.ID, "lightSpaceMatrix"), 1, GL_FALSE, glm::value_ptr(lightSpaceMatrix));
+		// render the loaded model
+		model = glm::mat4(1.0f);
+		//model = glm::rotate(model, glm::radians(90.0f), glm::vec3(1.0, 0.0, 0.0));
+		model = glm::translate(model, arrowPos);			// site
+		//model = glm::rotate(model, glm::radians(20.0f), glm::vec3(arrowPos.x, 0.0, arrowPos.z));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));		// scale
+		modelShader_noneTexture.setMat4("model", model);
+		glUniform1i(shadowLoc, 9);
+		glActiveTexture(GL_TEXTURE9);
+		glBindTexture(GL_TEXTURE_2D, depthMap);
+		if(key==a1)
+			Model_arrow_up.Draw(modelShader_noneTexture);
+		else if(key==a2)
+			Model_arrow_down.Draw(modelShader_noneTexture);
+		else if(key==a3)
+			Model_arrow_left.Draw(modelShader_noneTexture);
+		else if(key==a4)
+			Model_arrow_right.Draw(modelShader_noneTexture);
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
 		glfwSwapBuffers(window);
