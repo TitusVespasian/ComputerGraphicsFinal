@@ -110,7 +110,7 @@ extern void deleteOcean();
 const int MODE = 1; //0:keyboard 1:readfile(CV)
 
 // aanimation time last
-const float a_time[] = { 4.74,4.5,4.97,4.17,3.8 };
+const float a_time[] = { 4.74f,4.50f,4.97f,4.17f,3.80f };
 
 struct movement {
 	int id;

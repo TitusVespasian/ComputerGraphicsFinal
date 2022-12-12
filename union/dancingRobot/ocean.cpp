@@ -43,7 +43,7 @@ void renderWater();
 unsigned int loadTexture(const char* path);
 void deleteOcean();
 
-void deleteOcean() 
+void deleteOcean()
 {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteTextures(TEXTURES_AMOUNT, heightMap);
@@ -125,93 +125,93 @@ void initWater()
 }
 
 void renderWater() {
-    program_water.use();
-    program_water.setInt("heightMap1", 0);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, heightMap[firstIndex]);
+	program_water.use();
+	program_water.setInt("heightMap1", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, heightMap[firstIndex]);
 
-    program_water.setInt("heightMap2", 1);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, heightMap[lastIndex]);
+	program_water.setInt("heightMap2", 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, heightMap[lastIndex]);
 
-    program_water.setInt("normalMap1", 2);
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, normalMap[firstIndex]);
+	program_water.setInt("normalMap1", 2);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, normalMap[firstIndex]);
 
-    program_water.setInt("normalMap2", 3);
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, normalMap[lastIndex]);
+	program_water.setInt("normalMap2", 3);
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, normalMap[lastIndex]);
 
-    program_water.setInt("water", 4);
-    glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D, waterTex);
+	program_water.setInt("water", 4);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, waterTex);
 
-    program_water.setInt("wavesHeightMap", 5);
-    glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D, wavesHeightMap);
+	program_water.setInt("wavesHeightMap", 5);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, wavesHeightMap);
 
-    program_water.setInt("wavesNormalMap", 6);
-    glActiveTexture(GL_TEXTURE6);
-    glBindTexture(GL_TEXTURE_2D, wavesNormalMap);
+	program_water.setInt("wavesNormalMap", 6);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, wavesNormalMap);
 
-    if (interpolateFactor >= 1)
-    {
-        interpolateFactor = 0.0f;
-        if (lastIndex == TEXTURES_AMOUNT - 1)
-        {
-            firstIndex = 0;
-            lastIndex = 1;
-        }
-        else
-        {
-            ++firstIndex;
-            ++lastIndex;
-        }
-    }
-    else
-    {
-        interpolateFactor += 0.4 * deltaTime;
-        program_water.setFloat("interpolateFactor", interpolateFactor);
-    }
+	if (interpolateFactor >= 1)
+	{
+		interpolateFactor = 0.0f;
+		if (lastIndex == TEXTURES_AMOUNT - 1)
+		{
+			firstIndex = 0;
+			lastIndex = 1;
+		}
+		else
+		{
+			++firstIndex;
+			++lastIndex;
+		}
+	}
+	else
+	{
+		interpolateFactor += 0.40f * deltaTime;
+		program_water.setFloat("interpolateFactor", interpolateFactor);
+	}
 
-    static float offset = 0.0f;
-    if (offset >= INT_MAX - 2)
-        offset = 0;
-    offset += 0.015 * deltaTime;
+	static float offset = 0.0f;
+	if (offset >= INT_MAX - 2)
+		offset = 0;
+	offset += 0.015f * deltaTime;
 
-    program_water.setFloat("wavesOffset", offset);
+	program_water.setFloat("wavesOffset", offset);
 
-    glBindVertexArray(VAO);
-    glPatchParameteri(GL_PATCH_VERTICES, 4);
+	glBindVertexArray(VAO);
+	glPatchParameteri(GL_PATCH_VERTICES, 4);
 
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-    glm::mat4 view = camera.GetViewMatrix();
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(0.0f, 0.142f, 20.0f));
-    model = glm::scale(model, glm::vec3(13.0f, 13.f, 13.0f));
-    model = glm::rotate(model, glm::radians(60.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, -8.0f));
-    program_water.setVec3("viewPos", camera.Position);
+	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+	glm::mat4 view = camera.GetViewMatrix();
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.142f, 20.0f));
+	model = glm::scale(model, glm::vec3(13.0f, 13.f, 13.0f));
+	model = glm::rotate(model, glm::radians(60.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, -8.0f));
+	program_water.setVec3("viewPos", camera.Position);
 
-    glm::mat4 temp = model;
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-            {
-                temp = glm::translate(model, glm::vec3((i - 2) * 5 * 0.95f, 0.0f, (j - 2) * 5 * 0.95f));
-                program_water.setMat4("model", temp);
-                program_water.setMat4("mvp", projection * view * temp);
-                glDrawArraysInstanced(GL_PATCHES, 0, 4, 320 * 320);
-                if (offset >= INT_MAX - 2)
-                    offset = 0;
-                offset += 0.004 * deltaTime;
-                program_water.setFloat("wavesOffset", offset);
-            }
-        }
-    }
+	glm::mat4 temp = model;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			{
+				temp = glm::translate(model, glm::vec3((i - 2) * 5 * 0.95f, 0.0f, (j - 2) * 5 * 0.95f));
+				program_water.setMat4("model", temp);
+				program_water.setMat4("mvp", projection * view * temp);
+				glDrawArraysInstanced(GL_PATCHES, 0, 4, 320 * 320);
+				if (offset >= INT_MAX - 2)
+					offset = 0;
+				offset += 0.004f * deltaTime;
+				program_water.setFloat("wavesOffset", offset);
+			}
+		}
+	}
 
 
-    glBindVertexArray(0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 
