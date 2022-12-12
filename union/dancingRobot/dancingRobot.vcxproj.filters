@@ -25,9 +25,6 @@
     <Filter Include="资源文件\scene">
       <UniqueIdentifier>{98c8d8a7-7ec7-4fd7-8a9d-53353f027616}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\scene">
-      <UniqueIdentifier>{0b380d34-3f2d-4d4e-88c0-5e0904d53103}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件\water">
       <UniqueIdentifier>{71df702c-7d84-48a4-a4bd-e941ee93f8d7}</UniqueIdentifier>
     </Filter>
@@ -53,12 +50,6 @@
     </None>
     <None Include="shaders\scene\skybox.vs">
       <Filter>资源文件\scene</Filter>
-    </None>
-    <None Include="shaders\model\1.model_loading.fs">
-      <Filter>资源文件\model</Filter>
-    </None>
-    <None Include="shaders\model\1.model_loading.vs">
-      <Filter>资源文件\model</Filter>
     </None>
     <None Include="shaders\model\anim_model.fs">
       <Filter>资源文件\model</Filter>
@@ -90,8 +81,12 @@
     <None Include="shaders\water\water-vert.vs">
       <Filter>资源文件\water</Filter>
     </None>
-    <None Include="shaders\model\dirShadowModel.fs" />
-    <None Include="shaders\model\dirShadowModel.vs" />
+    <None Include="shaders\model\dirShadowModel.vs">
+      <Filter>资源文件\model</Filter>
+    </None>
+    <None Include="shaders\model\dirShadowModel.fs">
+      <Filter>资源文件\model</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation\animation.h">
@@ -118,9 +113,6 @@
     <ClInclude Include="general\mesh.h">
       <Filter>头文件\general</Filter>
     </ClInclude>
-    <ClInclude Include="general\model.h">
-      <Filter>头文件\general</Filter>
-    </ClInclude>
     <ClInclude Include="general\shader.h">
       <Filter>头文件\general</Filter>
     </ClInclude>
@@ -129,12 +121,6 @@
     </ClInclude>
     <ClInclude Include="skybox.hpp">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="scene_temp\scene_mesh.h">
-      <Filter>头文件\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="scene_temp\scene_model.h">
-      <Filter>头文件\scene</Filter>
     </ClInclude>
     <ClInclude Include="water\Program_w.hpp">
       <Filter>头文件\water</Filter>

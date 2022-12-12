@@ -141,8 +141,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="shaders\model\1.model_loading.fs" />
-    <None Include="shaders\model\1.model_loading.vs" />
     <None Include="shaders\model\anim_model.fs" />
     <None Include="shaders\model\anim_model.vs" />
     <None Include="shaders\model\dirShadowModel.fs" />
@@ -171,11 +169,8 @@
     <ClInclude Include="animation\model_animation.h" />
     <ClInclude Include="general\camera.h" />
     <ClInclude Include="general\mesh.h" />
-    <ClInclude Include="general\model.h" />
     <ClInclude Include="general\shader.h" />
     <ClInclude Include="general\shader_m.h" />
-    <ClInclude Include="scene_temp\scene_mesh.h" />
-    <ClInclude Include="scene_temp\scene_model.h" />
     <ClInclude Include="skybox.hpp" />
     <ClInclude Include="water\Program_w.hpp" />
     <ClInclude Include="water\Shader_w.hpp" />
